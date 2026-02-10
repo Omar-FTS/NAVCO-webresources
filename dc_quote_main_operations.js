@@ -21,8 +21,7 @@ var NavcoSdk = window.NavcoSdk || {};
     // ================================
     // Form OnLoad Handler
     // ================================
-    this.SelectQuoteProcessAndForm = function (executionContext) {
-        var formContext = executionContext.getFormContext();
+    function SelectQuoteProcessAndForm(formContext) {
         console.log("SelectQuoteProcessAndForm is called");
 
         var QUOTE_MODEL_BOX_SALE = 948170001;
@@ -249,7 +248,7 @@ var NavcoSdk = window.NavcoSdk || {};
         removeDuplicateWarrantyOptionsIfExists(formContext)
 
         handleForecastProfitCenterOptions(formContext)
-
+        SelectQuoteProcessAndForm(formContext);
         // ensure field is added to the form. The dc_installdifficultydisplay is added to standard model quotes only.
         // and this script is used in standard model and box sales quotes forms.
         if (formContext.getAttribute('dc_installdifficultydisplay') && formContext.getControl('dc_installdifficultydisplay')) {
