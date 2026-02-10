@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Multiple Quotes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-row {
+            flex-direction: row;
+        }
+
+        .justify-start {
+            justify-content: flex-start;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-end {
+            justify-content: end;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .w-1\/4 {
+            width: 25%;
+        }
+
+        .w-1\/2 {
+            width: 50%;
+        }
+
+        .w-51 {
+            width: 51%;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-104 {
+            height: 104px;
+        }
+
+        .h-33 {
+            height: 33px;
+        }
+
+        .h-5 {
+            height: 20px;
+        }
+
+        .p-1 {
+            padding: 4px;
+        }
+
+        .p-2 {
+            padding: 8px;
+        }
+
+        .p-4 {
+            padding: 16px;
+        }
+
+        .pl-1 {
+            padding: 4px;
+        }
+
+        .pr-1 {
+            padding: 4px;
+        }
+
+        .pt-5 {
+            padding-top: 20px;
+        }
+
+        .pr-4 {
+            padding-right: 16px;
+        }
+
+        .pb-1 {
+            padding: 4px;
+        }
+
+        .-m-2 {
+            margin: -8px;
+        }
+
+        .mt-16 {
+            margin-top: 64px;
+        }
+
+        .ml-4 {
+            margin-left: 16px;
+        }
+
+        .my-4 {
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+
+        .bg-blue-500 {
+            background-color: #4299E1;
+        }
+
+        .bg-blue-600 {
+            background-color: #3182CE;
+        }
+
+        .bg-yellow-300 {
+            background-color: #FAF089;
+        }
+
+        .bg-gray-300 {
+            background-color: #cbd5e1;
+        }
+
+        .hover\:bg-gray-400:hover {
+            background-color: #94a3b8;
+        }
+
+        .hover\:bg-blue-600:hover {
+            background-color: #3182CE;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-gray-800 {
+            color: #2D3748;
+        }
+
+        .border-none {
+            border: none;
+        }
+
+        .border-radius-1 {
+            border-radius: 4px;
+        }
+
+        .font-segoe {
+            font-family: SegoeUI, "Segoe UI";
+        }
+
+        .font-meduim {
+            font-size: medium;
+        }
+
+        .font-small {
+            font-size: small;
+        }
+
+        .opacity-75 {
+            opacity: 75%;
+        }
+
+        .opacity-25 {
+            opacity: 25%;
+        }
+
+        .required:after {
+            content: " *";
+            color: #E53E3E;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        #copy-all-lines-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        #copy-all-lines-input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        #copy-all-lines-input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        #copy-all-lines-input:checked+.slider:before {
+            -webkit-transform: translateX(18px);
+            -ms-transform: translateX(18px);
+            transform: translateX(18px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+
+    <script type="text/javascript">
+        /**
+         *
+         * @returns Get the data passed to the web resource and parse it
+         */
+        function getDataParam() {
+            let vals = new Array()
+            if (location.search != "") {
+                vals = location.search.substr(1).split("&")
+                for (var i in vals) {
+                    vals[i] = vals[i].replace(/\+/g, " ").split("=")
+                }
+                for (var i in vals) {
+                    if (vals[i][0].toLowerCase() == "data") {
+                        return parseDataValue(vals[i][1])
+                    }
+                }
+                return {}
+            } else {
+                return {}
+            }
+        }
+
+        /**
+         * Helper for parsing the data
+         * @param {*} datavalue
+         * @returns
+         */
+        function parseDataValue(datavalue) {
+            if (datavalue != "") {
+                let vals = {};
+
+                let decodedValues = decodeURIComponent(datavalue).split("&")
+                for (var i in decodedValues) {
+                    const value = decodedValues[i].replace(/\+/g, " ").split("=");
+                    vals[value[0]] = value[1]
+                }
+
+                return vals
+            } else {
+                {
+                }
+            }
+        }
+
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                let data = getDataParam()
+
+                document.body.querySelector("#opportunity-id").value = data["opportunityId"]
+
+                // Access the form element...
+                const form = document.body.querySelector("#create-multiple-quotes-form")
+
+                // ...and take over its submit event.
+                form.addEventListener("submit", (event) => {
+                    event.preventDefault()
+                    sendData()
+                })
+
+
+                document.getElementById("cancel-btn").addEventListener("click", (event) => {
+                    self.close()
+                })
+            }
+        }
+
+        /**
+         * Submit the location manual data entry
+         */
+        function sendData() {
+            try {
+                const globalContext = window.parent.Xrm.Utility.getGlobalContext()
+
+                window.parent.Xrm.Utility.showProgressIndicator("Creating Multiple Quotes...")
+                const form = document.body.querySelector("#create-multiple-quotes-form")
+                // Bind the FormData object and the form element
+                const FD = new FormData(form)
+                const opportunityId = form.querySelector("#opportunity-id").value
+
+                const object = {
+                    "dc_generatemultiplequotes": true,
+                    "dc_quotestogenerate": FD.get("number-of-quotes"),
+                    "dc_copyalllines": FD.get("copy-all-lines") === 'on' ? true : false
+                }
+
+                const json = JSON.stringify(object)
+
+                const clientUrl = globalContext.getClientUrl()
+
+                fetch(`${clientUrl}/api/data/v9.2/opportunities(${opportunityId})`, {
+                    method: 'PATCH',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: json
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json()
+                        }
+
+                        return response
+                    })
+                    .then(response => {
+                        if (response.hasOwnProperty("error")) {
+                            throw Error(response.error.message)
+                        }
+
+                        window.parent.Xrm.Utility.closeProgressIndicator()
+                        self.close()
+                    })
+                    .catch(error => {
+                        window.parent.Xrm.Utility.closeProgressIndicator()
+                        alert(error)
+                    })
+            } catch (error) {
+                window.parent.Xrm.Utility.closeProgressIndicator()
+                console.log(error)
+                alert("An error has occured, please contact your admin!")
+            }
+        }
+    </script>
+</head>
+
+<body onload="onPageLoad();">
+    <form id="create-multiple-quotes-form">
+        <div class="hidden h-5 p-4 font-segoe">
+            <label class="required w-1/4 h-5" for="opportunity-id">
+                Opportunity Id
+            </label>
+            <input class="ml-4 h-5 w-1/2 p-1 font-meduim opacity-75" id="opportunity-id" name="opportunity-id"
+                type="hidden" disabled="true" value="undefined">
+        </div>
+        <div id="number-of-quotes" class="flex flex-row justify-start items-center h-5 p-4 font-segoe">
+            <label class="required w-1/2 h-5" for="number-of-quotes">
+                Number of Quotes:
+            </label>
+            <input required id="number-of-quotes" class="ml-4 h-5 w-1/2 p-1 font-meduim opacity-75"
+                name="number-of-quotes" type="number" min="0">
+        </div>
+        <hr id="line-separator-3" class="opacity-25">
+        <div id="copy-all-lines" class="flex flex-row justify-start items-center h-5 p-4 font-segoe">
+            <label class="h-5 flex w-full">
+                <div class="w-1/2">Copy all lines</div>
+                <div class="switch ml-4">
+                    <input name="copy-all-lines" id="copy-all-lines-input" type="checkbox" checked>
+                    <span class="slider round"></span>
+                </div>
+            </label>
+
+        </div>
+        <hr class="opacity-25">
+        <div class="flex flex-row justify-end items-center h-5 pt-5 pr-4 font-segoe my-4">
+            <button
+                class="w-1/4 p-2 cursor-pointer bg-blue-500 border-none text-white border-radius-1 hover:bg-blue-600"
+                id="save-btn">
+                <span>Save</span>
+            </button>
+            <button
+                class="ml-4 w-1/4 p-2 cursor-pointer bg-gray-300 border-none text-white border-radius-1 hover:bg-gray-400"
+                id="cancel-btn" type="button">
+                <span>Cancel</span>
+            </button>
+        </div>
+    </form>
+</body>
+
+</html>
