@@ -4,10 +4,15 @@ var NavcoSdk = window.NavcoSdk || {};
     /*----------------------------------------------------------------------------------------------------------------*/
     /*---------------------------------------------------- Event Handlers --------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    this.SetWarrantyRequiredOnUpdate = function (executionContext) {
-        var formContext = executionContext.getFormContext();
+    function SetWarrantyRequiredOnUpdate(formContext) {
+       
+         // 2 = Update
+    if (formContext.ui.getFormType() !== 2) {
+        return;
+    }
         setFieldRequired(formContext, "dc_warrantyoptionid");
     }
+
     function setFieldRequired(formContext, fieldName) {
         var attribute = formContext.getAttribute(fieldName);
         if (!attribute) {
@@ -22,8 +27,7 @@ var NavcoSdk = window.NavcoSdk || {};
     // Form OnLoad Handler
     // ================================
     function SelectQuoteProcessAndForm(formContext) {
-        console.log("SelectQuoteProcessAndForm is called");
-
+    
         var QUOTE_MODEL_BOX_SALE = 948170001;
         var QUOTE_MODEL_STANDARD = 948170000;
 
@@ -169,10 +173,12 @@ var NavcoSdk = window.NavcoSdk || {};
             formContext.getControl('dc_margindollars')?.setVisible(true);
         }
     }
-
-    this.checkForDiscontinuedProducts = function (executionContext) {
-        const formContext = executionContext.getFormContext();
-
+    function isForm(formContext, formName) {
+        var currentForm = formContext.ui.formSelector.getCurrentItem();
+        return currentForm && currentForm.getLabel() === formName;
+    }
+    function checkForDiscontinuedProducts(formContext) {
+      
         const stateCode = formContext.getAttribute("statecode").getValue();
 
         if (stateCode === 0 || stateCode === 1) {
@@ -249,6 +255,11 @@ var NavcoSdk = window.NavcoSdk || {};
 
         handleForecastProfitCenterOptions(formContext)
         SelectQuoteProcessAndForm(formContext);
+        checkForDiscontinuedProducts(formContext);
+        if (isForm(formContext, "Standard Model Quote")) {
+
+            SetWarrantyRequiredOnUpdate(formContext);//add if-statement
+        }
         // ensure field is added to the form. The dc_installdifficultydisplay is added to standard model quotes only.
         // and this script is used in standard model and box sales quotes forms.
         if (formContext.getAttribute('dc_installdifficultydisplay') && formContext.getControl('dc_installdifficultydisplay')) {
