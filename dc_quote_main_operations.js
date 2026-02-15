@@ -5,11 +5,11 @@ var NavcoSdk = window.NavcoSdk || {};
     /*---------------------------------------------------- Event Handlers --------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
     function SetWarrantyRequiredOnUpdate(formContext) {
-       
-         // 2 = Update
-    if (formContext.ui.getFormType() !== 2) {
-        return;
-    }
+
+        // 2 = Update
+        if (formContext.ui.getFormType() !== 2) {
+            return;
+        }
         setFieldRequired(formContext, "dc_warrantyoptionid");
     }
 
@@ -27,10 +27,9 @@ var NavcoSdk = window.NavcoSdk || {};
     // Form OnLoad Handler
     // ================================
     function SelectQuoteProcessAndForm(formContext) {
-    
+
         var QUOTE_MODEL_BOX_SALE = 948170001;
         var QUOTE_MODEL_STANDARD = 948170000;
-
         var BPF_BOX_SALE_QUOTE_TO_ORDER = "Box Sale Quote to Order";
         var BPF_MULTIPLE_QUOTE_OPP_SALES = "Multiple Quote Opportunity Sales Process";
 
@@ -47,7 +46,11 @@ var NavcoSdk = window.NavcoSdk || {};
            BOX SALE QUOTE
         --------------------------------*/
         if (quoteModel === QUOTE_MODEL_BOX_SALE) {
-            setBpfByName(formContext, BPF_BOX_SALE_QUOTE_TO_ORDER);
+
+            if (formContext.ui.getFormType() !== 1) { 
+                setBpfByName(formContext, BPF_BOX_SALE_QUOTE_TO_ORDER);
+            }
+            
             selectFormByName(formContext, "Box Sale Quote");
             return;
         }
@@ -103,6 +106,7 @@ var NavcoSdk = window.NavcoSdk || {};
                         console.warn("Failed to set BPF:", processName);
                     }
                 });
+
             },
             function (error) {
                 console.error("Error retrieving BPF:", error.message);
@@ -110,9 +114,6 @@ var NavcoSdk = window.NavcoSdk || {};
         );
     }
 
-    // ================================
-    // Select Form by Name
-    // ================================
     function selectFormByName(formContext, formName) {
         var currentForm = formContext.ui.formSelector.getCurrentItem();
         if (currentForm && currentForm.getLabel() === formName) {
@@ -127,7 +128,6 @@ var NavcoSdk = window.NavcoSdk || {};
             }
         }
     }
-
     // ================================
     // Check for Multiple Active Quotes
     // ================================
@@ -178,7 +178,7 @@ var NavcoSdk = window.NavcoSdk || {};
         return currentForm && currentForm.getLabel() === formName;
     }
     function checkForDiscontinuedProducts(formContext) {
-      
+
         const stateCode = formContext.getAttribute("statecode").getValue();
 
         if (stateCode === 0 || stateCode === 1) {
