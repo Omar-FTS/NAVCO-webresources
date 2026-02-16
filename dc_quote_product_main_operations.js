@@ -244,4 +244,103 @@ var Navco = window.Navco || {};
         var attr = formContext.getAttribute(fieldName);
         if (attr) attr.setRequiredLevel("required");
     }
+
+    // Box Sale - Prevent Non-Material Lines
+    // Validates that only Material products are added to Box Sale quotes (dc_quotemodel = 948170001)
+    this.validateBoxSaleMaterialOnly = async function (executionContext) {
+
+        const formContext = executionContext.getFormContext();
+        const BOX_SALE_MODEL = 948170001;
+
+        const quoteLookup = getLookupValue(formContext, "dc_quoteid");
+
+        if (!quoteLookup) return;
+
+        try {
+            const quote = await Xrm.WebApi.retrieveRecord(
+                quoteLookup.entityType,
+                quoteLookup.id,
+                "?$select=dc_quotemodel"
+            );
+
+            // Only validate if this is a Box Sale quote
+            if (quote.dc_quotemodel !== BOX_SALE_MODEL) {
+                formContext.getControl("dc_parentfilterid")?.clearNotification("boxsale_parent");
+                formContext.getControl("dc_productid")?.clearNotification("boxsale_product");
+                return;
+            }
+
+            // Validate dc_parentfilterid
+            await validateParentFilter(formContext);
+
+            // Validate dc_productid
+            await validateProduct(formContext);
+
+        } catch (error) {
+            console.error("Navco: Error validating Box Sale material-only rule.", error.message);
+        }
+    }
+
+    async function validateParentFilter(formContext) {
+        const parentFilterAttr = formContext.getAttribute("dc_parentfilterid");
+
+        if (!parentFilterAttr || !parentFilterAttr.getValue()) {
+            formContext.getControl("dc_parentfilterid")?.clearNotification("boxsale_parent");
+            return;
+        }
+
+        const parentFilterId = parentFilterAttr.getValue()[0].id.replace("{", "").replace("}", "");
+
+        try {
+            const product = await Xrm.WebApi.retrieveRecord(
+                "product",
+                parentFilterId,
+                "?$select=productnumber"
+            );
+
+            if (product.productnumber !== "MATERIAL_FAMILY") {
+                formContext.getControl("dc_parentfilterid").setNotification(
+                    "Invalid parent product type for Box Sales.",
+                    "boxsale_parent"
+                );
+            } else {
+                formContext.getControl("dc_parentfilterid").clearNotification("boxsale_parent");
+            }
+
+        } catch (error) {
+            console.error("Navco: Error validating parent filter for Box Sale.", error.message);
+        }
+    }
+
+    async function validateProduct(formContext) {
+        const productAttr = formContext.getAttribute("dc_productid");
+
+        if (!productAttr || !productAttr.getValue()) {
+            formContext.getControl("dc_productid")?.clearNotification("boxsale_product");
+            return;
+        }
+
+        const productId = productAttr.getValue()[0].id.replace("{", "").replace("}", "");
+
+        try {
+            const product = await Xrm.WebApi.retrieveRecord(
+                "product",
+                productId,
+                "?$select=parentproductid&$expand=parentproductid($select=productnumber)"
+            );
+
+            if (product.parentproductid && product.parentproductid.productnumber !== "MATERIAL_FAMILY") {
+                formContext.getControl("dc_productid").setNotification(
+                    "Only Materials are allowed for Box Sales!",
+                    "boxsale_product"
+                );
+            } else {
+                formContext.getControl("dc_productid").clearNotification("boxsale_product");
+            }
+
+        } catch (error) {
+            console.error("Navco: Error validating product for Box Sale.", error.message);
+        }
+    }
+
 }).call(Navco)
