@@ -82,7 +82,7 @@ var Navco = window.Navco || {};
                 control.setDisabled(true);
             }
         });
-        
+
         forceDisablePriceFields(formContext);
 
     }
@@ -340,6 +340,53 @@ var Navco = window.Navco || {};
 
         } catch (error) {
             console.error("Navco: Error validating product for Box Sale.", error.message);
+        }
+    }
+
+    // Update Product From Search Control
+    // Converted from D365 N52 Formula
+    this.updateProductFromSearchControl = async function (executionContext) {
+        const formContext = executionContext.getFormContext();
+
+        // Check if dc_selectedsearchproductid contains data
+        const selectedSearchProductAttr = formContext.getAttribute("dc_selectedsearchproductid");
+
+        if (!selectedSearchProductAttr || !selectedSearchProductAttr.getValue()) {
+            return;
+        }
+
+        let selectedProductId = selectedSearchProductAttr.getValue();
+        try {
+            // Retrieve the product name
+            const product = await Xrm.WebApi.retrieveRecord(
+                "product",
+                selectedProductId,
+                "?$select=name"
+            );
+
+            const productName = product.name;
+
+            // Create lookup value object
+            const lookupValue = [{
+                id: selectedProductId,
+                name: productName,
+                entityType: "product"
+            }];
+
+            // Set dc_productid field
+            const dcProductIdAttr = formContext.getAttribute("dc_productid");
+            if (dcProductIdAttr) {
+                dcProductIdAttr.setValue(lookupValue);
+            }
+
+            // Set productid field
+            const productIdAttr = formContext.getAttribute("productid");
+            if (productIdAttr) {
+                productIdAttr.setValue(lookupValue);
+            }
+
+        } catch (error) {
+            console.error("Navco: Error updating product from search control.", error.message);
         }
     }
 
