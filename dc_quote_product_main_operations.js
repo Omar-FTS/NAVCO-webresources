@@ -6,6 +6,7 @@ var Navco = window.Navco || {};
         const formContext = executionContext.getFormContext()
         lockFormWhenRelatedQuoteIsPendingApproval(formContext);
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
+        setCostOverrideDescriptionRequired(formContext);
     }
 
     // check if given control is an ifrmae, webresource or a subgrid.
@@ -387,6 +388,68 @@ var Navco = window.Navco || {};
 
         } catch (error) {
             console.error("Navco: Error updating product from search control.", error.message);
+        }
+    }
+
+    // Set Hidden Product Field
+    // Converted from D365 N52 Formula
+    this.setHiddenProductField = function (executionContext) {
+
+        const formContext = executionContext.getFormContext();
+
+        // Check if dc_productid contains data
+        const dcProductIdAttr = formContext.getAttribute("dc_productid");
+
+        if (dcProductIdAttr && dcProductIdAttr.getValue()) {
+
+            // Get the lookup value from dc_productid
+            const dcProductValue = dcProductIdAttr.getValue()[0];
+
+            // Create lookup value object for productid
+            const lookupValue = [{
+                id: dcProductValue.id,
+                name: dcProductValue.name,
+                entityType: "product"
+            }];
+
+            // Set productid field
+            const productIdAttr = formContext.getAttribute("productid");
+            if (productIdAttr) {
+                productIdAttr.setValue(lookupValue);
+            }
+
+        } else {
+
+            // Clear productid field if dc_productid is empty
+            const productIdAttr = formContext.getAttribute("productid");
+            if (productIdAttr) {
+                productIdAttr.setValue(null);
+            }
+        }
+    }
+
+    // Set Cost Override Description Required
+    // Converted from D365 N52 Formula
+    this.setCostOverrideDescriptionRequiredInOnChange = function (executionContext) {
+        const formContext = executionContext.getFormContext();
+        setCostOverrideDescriptionRequired(formContext);
+    }
+
+    function setCostOverrideDescriptionRequired(formContext) {
+        // Check if dc_costoverride contains data
+        const costOverrideAttr = formContext.getAttribute("dc_costoverride");
+        const overrideDescriptionAttr = formContext.getAttribute("dc_overridedescription");
+
+        if (!overrideDescriptionAttr) {
+            return;
+        }
+
+        // If dc_costoverride has a value, make dc_overridedescription required
+        if (costOverrideAttr && costOverrideAttr.getValue() != null) {
+            overrideDescriptionAttr.setRequiredLevel("required");
+        } else {
+            // Otherwise, make it not required
+            overrideDescriptionAttr.setRequiredLevel("none");
         }
     }
 
