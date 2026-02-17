@@ -98,7 +98,6 @@ var Navco = window.Navco || {};
 
     this.SetMarginsAndDefaults = function (executionContext) {
 
-        debugger;
         var formContext = executionContext.getFormContext();
 
         var productAttr = formContext.getAttribute("dc_productid");
@@ -451,6 +450,62 @@ var Navco = window.Navco || {};
         } else {
             // Otherwise, make it not required
             overrideDescriptionAttr.setRequiredLevel("none");
+        }
+    }
+
+    // Toggle Special Product Margin
+    // Converted from D365 N52 Formula
+    this.toggleSpecialProductMargin = async function (executionContext) {
+        const formContext = executionContext.getFormContext();
+
+        const quoteLookup = 
+            getLookupValue(formContext, "dc_quoteid") ||
+            getLookupValue(formContext, "quoteid");
+
+        if (!quoteLookup) return;
+
+        const productAttr = formContext.getAttribute("dc_productid");
+        const marginAttr = formContext.getAttribute("dc_marginrate");
+
+        if (!productAttr || !productAttr.getValue() || !marginAttr) {
+            return;
+        }
+
+        try {
+            // Retrieve quote margins
+            const quote = await Xrm.WebApi.retrieveRecord(
+                quoteLookup.entityType,
+                quoteLookup.id,
+                "?$select=dc_standardproductmargin,dc_specialproductmargin"
+            );
+
+            const standardProductMargin = quote.dc_standardproductmargin;
+            const specialProductMargin = quote.dc_specialproductmargin;
+
+            // Get product family
+            const productId = productAttr.getValue()[0].id.replace("{", "").replace("}", "");
+            const productFamily = await getProductFamily(productId);
+
+            // Determine margin based on product family and special product flag
+            let marginRate = null;
+
+            if (productFamily === "MATERIAL_FAMILY") {
+                const specialProductAttr = formContext.getAttribute("dc_specialproduct");
+                
+                if (specialProductAttr && specialProductAttr.getValue() === true) {
+                    marginRate = specialProductMargin;
+                } else {
+                    marginRate = standardProductMargin;
+                }
+            }
+
+            // Set the margin rate field
+            if (marginRate !== null) {
+                marginAttr.setValue(marginRate);
+            }
+
+        } catch (error) {
+            console.error("Navco: Error toggling special product margin.", error.message);
         }
     }
 
