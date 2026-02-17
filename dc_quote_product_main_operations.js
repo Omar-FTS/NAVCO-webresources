@@ -7,6 +7,7 @@ var Navco = window.Navco || {};
         lockFormWhenRelatedQuoteIsPendingApproval(formContext);
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         setCostOverrideDescriptionRequired(formContext);
+        showHideQuantityValues(formContext);
     }
 
     // check if given control is an ifrmae, webresource or a subgrid.
@@ -450,6 +451,51 @@ var Navco = window.Navco || {};
         } else {
             // Otherwise, make it not required
             overrideDescriptionAttr.setRequiredLevel("none");
+        }
+    }
+
+    // Show/Hide Quantity Values
+    this.showHideQuantityValuesInOnChange = async function (executionContext) {
+
+        const formContext = executionContext.getFormContext();
+        showHideQuantityValues(formContext);
+    }
+
+    async function showHideQuantityValues(formContext) {
+
+        const productAttr = formContext.getAttribute("dc_productid");
+
+        if (!productAttr || !productAttr.getValue()) {
+            // If no product selected, hide monthly quantity
+            hideField(formContext, "dc_monthlyquantity");
+            return;
+        }
+
+        const productId = productAttr.getValue()[0].id.replace("{", "").replace("}", "");
+
+        try {
+            const productFamily = await getProductFamily(productId);
+
+            if (!productFamily) {
+                hideField(formContext, "dc_monthlyquantity");
+                return;
+            }
+
+            if (productFamily === "MATERIAL_FAMILY" ||
+                productFamily === "SERVICE_FAMILY" ||
+                productFamily === "OUTSIDELABOR_FAMILY") {
+
+                showField(formContext, "quantity");
+                hideField(formContext, "dc_monthlyquantity");
+
+            } else {
+                showField(formContext, "dc_monthlyquantity");
+                hideField(formContext, "quantity");
+            }
+
+        } catch (error) {
+            console.error("Navco: Error showing/hiding quantity values.", error.message);
+            hideField(formContext, "dc_monthlyquantity");
         }
     }
 
