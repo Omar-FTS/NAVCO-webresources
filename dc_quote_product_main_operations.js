@@ -8,6 +8,7 @@ var Navco = window.Navco || {};
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         setCostOverrideDescriptionRequired(formContext);
         showHideQuantityValues(formContext);
+        this.filterProducts(executionContext);
     }
 
     // check if given control is an ifrmae, webresource or a subgrid.
@@ -458,7 +459,7 @@ var Navco = window.Navco || {};
     this.toggleSpecialProductMargin = async function (executionContext) {
         const formContext = executionContext.getFormContext();
 
-        const quoteLookup = 
+        const quoteLookup =
             getLookupValue(formContext, "dc_quoteid") ||
             getLookupValue(formContext, "quoteid");
 
@@ -491,7 +492,7 @@ var Navco = window.Navco || {};
 
             if (productFamily === "MATERIAL_FAMILY") {
                 const specialProductAttr = formContext.getAttribute("dc_specialproduct");
-                
+
                 if (specialProductAttr && specialProductAttr.getValue() === true) {
                     marginRate = specialProductMargin;
                 } else {
@@ -506,6 +507,49 @@ var Navco = window.Navco || {};
 
         } catch (error) {
             console.error("Navco: Error toggling special product margin.", error.message);
+        }
+    }
+
+    // Filter Products
+    // Converted from D365 N52 Formula
+    this.filterProducts = function (executionContext) {
+        const formContext = executionContext.getFormContext();
+
+        const parentFilterAttr = formContext.getAttribute("dc_parentfilterid");
+        const itemTypeAttr = formContext.getAttribute("dc_itemtype");
+
+        // Only proceed if both fields contain data
+        if (!parentFilterAttr || !parentFilterAttr.getValue() || !itemTypeAttr || !itemTypeAttr.getValue()) {
+            return;
+        }
+
+        try {
+            const parentFilterId = parentFilterAttr.getValue()[0].id.replace("{", "").replace("}", "");
+            const itemType = itemTypeAttr.getValue();
+
+            // Get the product ID lookup control
+            const productControl = formContext.getControl("dc_productid");
+            if (!productControl) {
+                console.warn("Navco: Product control not found.");
+                return;
+            }
+
+            // Get FetchXml and LayoutXml (format with parameters)
+            const fetchXml = formatFetchXmlForProductFilter(parentFilterId, itemType);
+            const layoutXml = getProductFilterLayoutXml();
+
+            // Add custom view to product lookup
+            productControl.addCustomView(
+                "{00000000-0000-0000-0000-000000000001}",
+                "product",
+                "FilteredProducts",
+                fetchXml,
+                layoutXml,
+                true  // Set as default view
+            );
+
+        } catch (error) {
+            console.error("Navco: Error filtering products.", error.message);
         }
     }
 
@@ -552,6 +596,56 @@ var Navco = window.Navco || {};
             console.error("Navco: Error showing/hiding quantity values.", error.message);
             hideField(formContext, "dc_monthlyquantity");
         }
+    }
+
+    // Helper function to format FetchXml for product filtering
+    // Uses the ProductFilter saved query configuration
+    function formatFetchXmlForProductFilter(parentFilterId, itemType) {
+        const fetchXml = `<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+            <entity name="product">
+                <attribute name="name" />
+                <attribute name="productid" />
+                <attribute name="dc_manufacturerid" />
+                <attribute name="standardcost" />
+                <attribute name="price" />
+                <attribute name="dc_shortdescription" />
+                <filter type="and">
+                    <condition attribute="parentproductid" operator="eq" value="${parentFilterId}" />
+                    <condition attribute="statecode" operator="eq" value="0" />
+                </filter>
+                <link-entity name="dc_productcategory" from="dc_productcategoryid" to="dc_productcategoryid" link-type="inner" alias="ad">
+                    <filter type="and">
+                        <condition attribute="dc_itemtype" operator="eq" value="${itemType}" />
+                    </filter>
+                </link-entity>
+            </entity>
+        </fetch>`;
+        return fetchXml;
+    }
+
+    // Helper function to get LayoutXml for product filter view
+    // Replace this with your actual LayoutXml
+    function getProductFilterLayoutXml() {
+        // TODO: Update this with the actual LayoutXml from your ProductFilter saved query
+        const layoutXml = `<grid name="resultset"
+                                    object="1024"
+                                    jump="name"
+                                    select="1"
+                                    icon="1"
+                                    preview="1">
+
+                                <row name="result" id="productid">
+
+                                    <cell name="name" width="200" />
+                                    <cell name="dc_manufacturerid" width="150" />
+                                    <cell name="dc_shortdescription" width="150" />
+                                    <cell name="standardcost" width="150" />
+                                    <cell name="price" width="100" />
+
+                                </row>
+                                </grid>
+                                `;
+        return layoutXml;
     }
 
 }).call(Navco)
