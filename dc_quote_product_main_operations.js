@@ -580,6 +580,15 @@ var Navco = window.Navco || {};
                 return;
             }
 
+            if (productFamily === "MATERIAL_FAMILY") {
+
+                showField(formContext, "dc_specialproduct");
+
+            } else {
+                hideField(formContext, "dc_specialproduct");
+
+            }
+
             if (productFamily === "MATERIAL_FAMILY" ||
                 productFamily === "SERVICE_FAMILY" ||
                 productFamily === "OUTSIDELABOR_FAMILY") {
