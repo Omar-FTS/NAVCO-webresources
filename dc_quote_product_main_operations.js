@@ -8,8 +8,51 @@ var Navco = window.Navco || {};
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         setCostOverrideDescriptionRequired(formContext);
         showHideQuantityValues(formContext);
-        this.filterProducts(executionContext);
+        filterProducts(executionContext);
     }
+
+    this.onParentFilterChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+        validateBoxSaleMaterialOnly(executionContext);
+        showHideQuantityValuesInOnChange(executionContext);
+        filterProducts(executionContext);
+    }
+
+    this.onTypeFilterChange = function (executionContext) {
+        filterProducts(executionContext);
+    }
+
+    this.onDC_ProductChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+        validateBoxSaleMaterialOnly(executionContext);
+        setHiddenProductField(executionContext);
+        showHideQuantityValuesInOnChange(executionContext);
+    }
+
+    this.onQuantityChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+    }
+
+    this.onSpecialProductChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+        toggleSpecialProductMargin(executionContext);
+    }
+    this.onMarginRateChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+    }
+    this.onPriceOverrideChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+    }
+
+    this.onCostOverrideChange = function (executionContext) {
+        SetMarginsAndDefaults(executionContext);
+        setCostOverrideDescriptionRequiredInOnChange(executionContext);
+    }
+
+    this.selectedsearchproductidOnChange = function (executionContext) {
+        updateProductFromSearchControl(executionContext);
+    }
+
 
     // check if given control is an ifrmae, webresource or a subgrid.
     function doesControlHaveAttribute(control) {
@@ -97,7 +140,7 @@ var Navco = window.Navco || {};
         }, 1500); // 1 second delay
     }
 
-    this.SetMarginsAndDefaults = function (executionContext) {
+    function SetMarginsAndDefaults(executionContext) {
 
         var formContext = executionContext.getFormContext();
 
@@ -249,7 +292,7 @@ var Navco = window.Navco || {};
 
     // Box Sale - Prevent Non-Material Lines
     // Validates that only Material products are added to Box Sale quotes (dc_quotemodel = 948170001)
-    this.validateBoxSaleMaterialOnly = async function (executionContext) {
+    async function validateBoxSaleMaterialOnly(executionContext) {
 
         const formContext = executionContext.getFormContext();
         const BOX_SALE_MODEL = 948170001;
@@ -347,7 +390,7 @@ var Navco = window.Navco || {};
 
     // Update Product From Search Control
     // Converted from D365 N52 Formula
-    this.updateProductFromSearchControl = async function (executionContext) {
+   async function updateProductFromSearchControl(executionContext) {
         const formContext = executionContext.getFormContext();
 
         // Check if dc_selectedsearchproductid contains data
@@ -394,8 +437,7 @@ var Navco = window.Navco || {};
 
     // Set Hidden Product Field
     // Converted from D365 N52 Formula
-    this.setHiddenProductField = function (executionContext) {
-
+    function setHiddenProductField(executionContext) {
         const formContext = executionContext.getFormContext();
 
         // Check if dc_productid contains data
@@ -431,7 +473,7 @@ var Navco = window.Navco || {};
 
     // Set Cost Override Description Required
     // Converted from D365 N52 Formula
-    this.setCostOverrideDescriptionRequiredInOnChange = function (executionContext) {
+   function setCostOverrideDescriptionRequiredInOnChange(executionContext) {
         const formContext = executionContext.getFormContext();
         setCostOverrideDescriptionRequired(formContext);
     }
@@ -456,7 +498,7 @@ var Navco = window.Navco || {};
 
     // Toggle Special Product Margin
     // Converted from D365 N52 Formula
-    this.toggleSpecialProductMargin = async function (executionContext) {
+    async function toggleSpecialProductMargin(executionContext) {
         const formContext = executionContext.getFormContext();
 
         const quoteLookup =
@@ -512,7 +554,7 @@ var Navco = window.Navco || {};
 
     // Filter Products
     // Converted from D365 N52 Formula
-    this.filterProducts = function (executionContext) {
+    function filterProducts(executionContext) {
         const formContext = executionContext.getFormContext();
 
         const parentFilterAttr = formContext.getAttribute("dc_parentfilterid");
@@ -554,8 +596,7 @@ var Navco = window.Navco || {};
     }
 
     // Show/Hide Quantity Values
-    this.showHideQuantityValuesInOnChange = async function (executionContext) {
-
+    async function showHideQuantityValuesInOnChange(executionContext) {
         const formContext = executionContext.getFormContext();
         showHideQuantityValues(formContext);
     }
