@@ -1,4 +1,4 @@
-var Navco = window.Navco || {};
+var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 (function () {
 
     // Code to run in the form OnLoad event
@@ -698,4 +698,4 @@ var Navco = window.Navco || {};
         return layoutXml;
     }
 
-}).call(Navco)
+}).call(NavcoQuoteLineSdk)

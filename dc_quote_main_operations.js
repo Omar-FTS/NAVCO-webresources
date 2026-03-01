@@ -521,6 +521,52 @@ var NavcoSdk = window.NavcoSdk || {};
             formContext.ui.clearFormNotification("invalidlocation");
         }
     }
+     this.RecalculateInstallationDistance = function (formContext) {
+        var confirmStrings = { text: "Are you sure you want to recalculate the installation center and distance?", title: "Confirmation Dialog" };
+        var confirmOptions = { height: 200, width: 450 };
+
+        var currentRecordId = formContext.data.entity.getId().replace("{", "").replace("}", "");
+        Xrm.Navigation.openConfirmDialog(confirmStrings, confirmOptions).then(
+            function (success) {
+                if (success.confirmed) {
+                    console.log("current record ID" + currentRecordId);
+                    var query = "quotes(" + currentRecordId + ")/Microsoft.Dynamics.CRM.dc_RecalculateInstallationDistanceQuote";
+                    var url = Xrm.Utility.getGlobalContext().getClientUrl() + "/api/data/v9.2/" + query;
+
+                    Xrm.Utility.showProgressIndicator("Processing...");
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "OData-MaxVersion": "4.0",
+                            "OData-Version": "4.0",
+                            "Accept": "application/json",
+                            "Content-Type": "application/json; charset=utf-8"
+                        }
+                    })
+                        .then(response => {
+                            if (response.status !== 204) {
+                                return response.json().then(error => {
+                                    throw new Error(error.error.message);
+                                });
+                            }
+                        })
+                        .then(() => {
+                            formContext.ui.setFormNotification("Recalculation completed successfully.", "INFO", "Success");
+                            formContext.data.refresh(true);
+                        })
+                        .catch(error => {
+                            Xrm.Utility.alertDialog("An error occurred: " + error.message);
+                            formContext.ui.setFormNotification("An error occurred: " + error.message, "ERROR", "Failure");
+                        })
+                        .finally(() => {
+                            Xrm.Utility.closeProgressIndicator();
+                        });
+                }
+
+            });
+
+    };
 
 }).call(NavcoSdk);
 
