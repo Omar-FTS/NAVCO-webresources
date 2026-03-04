@@ -196,7 +196,7 @@ var NavcoSdk = window.NavcoSdk || {};
         }
     }
 
-    this.clearInstallationCenterAndDistance = function (executionContext) {
+   function clearInstallationCenterAndDistance(executionContext) {
         const formContext = executionContext.getFormContext();
 
         const location = formContext.getAttribute("dc_locationid").getValue();
@@ -277,6 +277,10 @@ var NavcoSdk = window.NavcoSdk || {};
 
         formContext.data.addOnLoad(onDataLoadHandler)
 
+    }
+
+    this.onLocationChange = function (executionContext) {
+        clearInstallationCenterAndDistance(executionContext)
     }
 
     // validate the "Forecast profit Center" field to make it required when user try to

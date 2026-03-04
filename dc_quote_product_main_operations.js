@@ -49,6 +49,10 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         setCostOverrideDescriptionRequiredInOnChange(executionContext);
     }
 
+    this.onMonthlyQuantityChange = function (executionContext) {
+        calculateQuantityFromMonthlyAndContract(executionContext);
+    }
+
     this.selectedsearchproductidOnChange = function (executionContext) {
         updateProductFromSearchControl(executionContext);
     }
@@ -696,6 +700,76 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                                 </grid>
                                 `;
         return layoutXml;
+    }
+
+    // Calculate Quantity from Monthly Quantity and Contract Length
+    // Converted from D365 N52 Formula with updated contract field logic
+    async function calculateQuantityFromMonthlyAndContract(executionContext) {
+        const formContext = executionContext.getFormContext();
+        
+        const monthlyQtyAttr = formContext.getAttribute("dc_monthlyquantity");
+        const quantityAttr = formContext.getAttribute("quantity");
+
+        // Check if monthly quantity contains data and is not zero
+        if (!monthlyQtyAttr || !monthlyQtyAttr.getValue() || monthlyQtyAttr.getValue() === 0) {
+            return;
+        }
+
+        // Get the quote lookup
+        const quoteLookup = getLookupValue(formContext, "dc_quoteid") || getLookupValue(formContext, "quoteid");
+
+        if (!quoteLookup) {
+            return;
+        }
+
+        try {
+            // Retrieve the contract length from the quote
+            const quote = await Xrm.WebApi.retrieveRecord(
+                quoteLookup.entityType,
+                quoteLookup.id,
+                "?$select=dc_contractlength"
+            );
+
+            if (!quote.dc_contractlength) {
+                return;
+            }
+
+            // Convert contract length option set value to years
+            const contractTermYears = calculateContractYears(quote.dc_contractlength);
+            
+            // Calculate contract units (years * 12 months)
+            const contractUnits = contractTermYears * 12;
+            
+            // Calculate total quantity (contract units * monthly quantity)
+            const totalQuantity = contractUnits * monthlyQtyAttr.getValue();
+            
+            // Set the quantity field
+            if (quantityAttr) {
+                quantityAttr.setValue(totalQuantity);
+            }
+
+        } catch (error) {
+            console.error("Navco: Error calculating quantity from monthly quantity and contract.", error.message);
+        }
+    }
+
+    // Helper function to calculate contract years from option set value
+    // Equivalent to backend CalculateContractYears method
+    function calculateContractYears(contractTermOptionSetValue) {
+        switch (contractTermOptionSetValue) {
+            case 948170000:
+                return 1;
+            case 948170001:
+                return 2;
+            case 948170002:
+                return 3;
+            case 948170003:
+                return 4;
+            case 948170004:
+                return 5;
+            default:
+                return 1;
+        }
     }
 
 }).call(NavcoQuoteLineSdk)
