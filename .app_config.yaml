@@ -1,0 +1,28 @@
+app_type: "console-cli" # Dynamics 365 web resources / script collection — no local server
+
+tech_stack:
+  backend: null  # Microsoft Dynamics 365 cloud (Xrm WebApi, no local backend)
+  frontend: "vanilla-js"  # Plain JavaScript/HTML5 targeting Dynamics 365 form context
+
+directories:
+  backend: null
+  frontend: "."  # All JS web resource files live at the project root
+
+commands:
+  start_backend: null   # N/A — Dynamics 365 is a cloud service
+  start_frontend: null  # N/A — web resources are deployed to Dynamics 365, not served locally
+  syntax_check: null    # No build tooling configured; needs manual verification
+  lint: null            # No ESLint or similar configured
+  test: null            # No test runner configured
+  type_check: null      # No TypeScript configured
+  build: null           # No build step; raw JS files are uploaded as web resources
+  db_reset: null        # N/A — database is Dynamics 365 cloud
+
+ports:
+  backend: null
+  frontend: null
+
+has_web_ui: false  # Web resources run inside Dynamics 365 — no standalone local UI
+
+env_files:
+  - ".env"

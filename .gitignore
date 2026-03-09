@@ -1,0 +1,18 @@
+# ADW - AI Developer Workflows
+/agents/
+/trees/
+/logs/
+/.adw/backups/
+.env
+.ports.env
+screenshots/
+videos/
+deep_specs/
+claude-max-output.json
+claude-max-output.jsonl
+storage.json
+# Playwright
+.playwright/
+.playwright-cli/
+.playwright-screenshots/
+.playwright-tests/

@@ -426,6 +426,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
             const dcProductIdAttr = formContext.getAttribute("dc_productid");
             if (dcProductIdAttr) {
                 dcProductIdAttr.setValue(lookupValue);
+                dcProductIdAttr.fireOnChange();
             }
 
             // Set productid field
