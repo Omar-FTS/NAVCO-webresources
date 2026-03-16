@@ -13,7 +13,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     this.onParentFilterChange = function (executionContext) {
         SetMarginsAndDefaults(executionContext);
-        validateBoxSaleMaterialOnly(executionContext);
+        productFamilyValidation(executionContext);
         showHideQuantityValuesInOnChange(executionContext);
         filterProducts(executionContext);
     }
@@ -24,7 +24,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     this.onDC_ProductChange = function (executionContext) {
         SetMarginsAndDefaults(executionContext);
-        validateBoxSaleMaterialOnly(executionContext);
+        productFamilyValidation(executionContext);
         setHiddenProductField(executionContext);
         showHideQuantityValuesInOnChange(executionContext);
     }
@@ -127,7 +127,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         formContext.ui.controls.forEach(function (control) {
 
             if (control && control.setDisabled) {
-                // Optional: skip controls you don’t want locked
+                // Optional: skip controls you donâ€™t want locked
                 // if (control.getName() === "dc_quoteid") return;
                 control.setDisabled(true);
             }
@@ -294,12 +294,12 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         if (attr) attr.setRequiredLevel("required");
     }
 
-    // Box Sale - Prevent Non-Material Lines
-    // Validates that only Material products are added to Box Sale quotes (dc_quotemodel = 948170001)
-    async function validateBoxSaleMaterialOnly(executionContext) {
+    // Quote Model Product Family Validation
+    async function productFamilyValidation(executionContext) {
 
         const formContext = executionContext.getFormContext();
         const BOX_SALE_MODEL = 948170001;
+        const STANDARD_MODEL = 948170000;
 
         const quoteLookup = getLookupValue(formContext, "dc_quoteid");
 
@@ -312,25 +312,40 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                 "?$select=dc_quotemodel"
             );
 
-            // Only validate if this is a Box Sale quote
-            if (quote.dc_quotemodel !== BOX_SALE_MODEL) {
+            const quoteModel = quote.dc_quotemodel;
+
+            if (quoteModel === BOX_SALE_MODEL) {
+                // Box Sale: Material family only
+                await validateParentFilter(formContext,
+                    ["MATERIAL_FAMILY"],
+                    "Only Material product family is allowed for Box Sale quotes."
+                );
+                await validateProduct(formContext,
+                    ["MATERIAL_FAMILY"],
+                    "Only Material products are allowed for Box Sale quotes!"
+                );
+            } else if (quoteModel === STANDARD_MODEL) {
+                // Standard Model: Material or Outside Labor families
+                await validateParentFilter(formContext,
+                    ["MATERIAL_FAMILY", "OUTSIDELABOR_FAMILY"],
+                    "Only Material or Outside Labor product families are allowed for Standard Model quotes."
+                );
+                await validateProduct(formContext,
+                    ["MATERIAL_FAMILY", "OUTSIDELABOR_FAMILY"],
+                    "Only Material or Outside Labor products are allowed for Standard Model quotes!"
+                );
+            } else {
+                // Other models: clear any existing notifications
                 formContext.getControl("dc_parentfilterid")?.clearNotification("boxsale_parent");
                 formContext.getControl("dc_productid")?.clearNotification("boxsale_product");
-                return;
             }
 
-            // Validate dc_parentfilterid
-            await validateParentFilter(formContext);
-
-            // Validate dc_productid
-            await validateProduct(formContext);
-
         } catch (error) {
-            console.error("Navco: Error validating Box Sale material-only rule.", error.message);
+            console.error("Navco: Error validating product family rule.", error.message);
         }
     }
 
-    async function validateParentFilter(formContext) {
+    async function validateParentFilter(formContext, allowedFamilies, errorMessage) {
         const parentFilterAttr = formContext.getAttribute("dc_parentfilterid");
 
         if (!parentFilterAttr || !parentFilterAttr.getValue()) {
@@ -347,9 +362,9 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                 "?$select=productnumber"
             );
 
-            if (product.productnumber !== "MATERIAL_FAMILY") {
+            if (!allowedFamilies.includes(product.productnumber)) {
                 formContext.getControl("dc_parentfilterid").setNotification(
-                    "Invalid parent product type for Box Sales.",
+                    errorMessage,
                     "boxsale_parent"
                 );
             } else {
@@ -357,11 +372,11 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
             }
 
         } catch (error) {
-            console.error("Navco: Error validating parent filter for Box Sale.", error.message);
+            console.error("Navco: Error validating parent filter.", error.message);
         }
     }
 
-    async function validateProduct(formContext) {
+    async function validateProduct(formContext, allowedFamilies, errorMessage) {
         const productAttr = formContext.getAttribute("dc_productid");
 
         if (!productAttr || !productAttr.getValue()) {
@@ -378,9 +393,9 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                 "?$select=parentproductid&$expand=parentproductid($select=productnumber)"
             );
 
-            if (product.parentproductid && product.parentproductid.productnumber !== "MATERIAL_FAMILY") {
+            if (product.parentproductid && !allowedFamilies.includes(product.parentproductid.productnumber)) {
                 formContext.getControl("dc_productid").setNotification(
-                    "Only Materials are allowed for Box Sales!",
+                    errorMessage,
                     "boxsale_product"
                 );
             } else {
@@ -388,7 +403,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
             }
 
         } catch (error) {
-            console.error("Navco: Error validating product for Box Sale.", error.message);
+            console.error("Navco: Error validating product.", error.message);
         }
     }
 
