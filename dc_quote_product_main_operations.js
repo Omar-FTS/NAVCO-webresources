@@ -7,14 +7,12 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         lockFormWhenRelatedQuoteIsPendingApproval(formContext);
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         setCostOverrideDescriptionRequired(formContext);
-        showHideQuantityValues(formContext);
         filterProducts(executionContext);
     }
 
     this.onParentFilterChange = function (executionContext) {
         SetMarginsAndDefaults(executionContext);
         productFamilyValidation(executionContext);
-        showHideQuantityValuesInOnChange(executionContext);
         filterProducts(executionContext);
     }
 
@@ -26,7 +24,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         SetMarginsAndDefaults(executionContext);
         productFamilyValidation(executionContext);
         setHiddenProductField(executionContext);
-        showHideQuantityValuesInOnChange(executionContext);
     }
 
     this.onQuantityChange = function (executionContext) {
@@ -612,59 +609,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
         } catch (error) {
             console.error("Navco: Error filtering products.", error.message);
-        }
-    }
-
-    // Show/Hide Quantity Values
-    async function showHideQuantityValuesInOnChange(executionContext) {
-        const formContext = executionContext.getFormContext();
-        showHideQuantityValues(formContext);
-    }
-
-    async function showHideQuantityValues(formContext) {
-
-        const productAttr = formContext.getAttribute("dc_productid");
-
-        if (!productAttr || !productAttr.getValue()) {
-            // If no product selected, hide monthly quantity
-            hideField(formContext, "dc_monthlyquantity");
-            return;
-        }
-
-        const productId = productAttr.getValue()[0].id.replace("{", "").replace("}", "");
-
-        try {
-            const productFamily = await getProductFamily(productId);
-
-            if (!productFamily) {
-                hideField(formContext, "dc_monthlyquantity");
-                return;
-            }
-
-            if (productFamily === "MATERIAL_FAMILY") {
-
-                showField(formContext, "dc_specialproduct");
-
-            } else {
-                hideField(formContext, "dc_specialproduct");
-
-            }
-
-            if (productFamily === "MATERIAL_FAMILY" ||
-                productFamily === "SERVICE_FAMILY" ||
-                productFamily === "OUTSIDELABOR_FAMILY") {
-
-                showField(formContext, "quantity");
-                hideField(formContext, "dc_monthlyquantity");
-
-            } else {
-                showField(formContext, "dc_monthlyquantity");
-                hideField(formContext, "quantity");
-            }
-
-        } catch (error) {
-            console.error("Navco: Error showing/hiding quantity values.", error.message);
-            hideField(formContext, "dc_monthlyquantity");
         }
     }
 
