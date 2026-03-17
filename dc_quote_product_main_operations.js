@@ -8,6 +8,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         setCostOverrideDescriptionRequired(formContext);
         filterProducts(executionContext);
+        SetMarginsAndDefaults(executionContext);
     }
 
     this.onParentFilterChange = function (executionContext) {
