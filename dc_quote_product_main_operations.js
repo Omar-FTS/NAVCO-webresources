@@ -48,7 +48,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
     }
 
     this.onMonthlyQuantityChange = function (executionContext) {
-        calculateQuantityFromMonthlyAndContract(executionContext);
     }
 
     this.selectedsearchproductidOnChange = function (executionContext) {
@@ -150,7 +149,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         if (!productAttr || !productAttr.getValue()) return;
 
         var specialProductAttr = formContext.getAttribute("dc_specialproduct");
-        var monthlyQtyAttr = formContext.getAttribute("dc_monthlyquantity");
         var marginAttr = formContext.getAttribute("dc_marginrate");
 
         // Get Quote Lookup (dc_quoteid first, fallback to quoteid)
@@ -182,7 +180,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
                         case "MATERIAL_FAMILY":
                             showField(formContext, "dc_specialproduct");
-                            hideAndClearField(formContext, "dc_monthlyquantity");
 
                             if (specialProductAttr && specialProductAttr.getValue() === true) {
                                 calculatedMargin = specialMargin;
@@ -192,33 +189,22 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                             break;
 
                         case "OUTSIDELABOR_FAMILY":
-                            hideAndClearField(formContext, "dc_monthlyquantity");
                             hideField(formContext, "dc_specialproduct");
                             calculatedMargin = outsideLaborMargin;
                             break;
 
                         case "MONITORING_FAMILY":
                             hideField(formContext, "dc_specialproduct");
-                            showField(formContext, "dc_monthlyquantity");
-
-                            if (monthlyQtyAttr) {
-                                monthlyQtyAttr.setValue(1);
-                                monthlyQtyAttr.setRequiredLevel("required");
-                                formContext.getControl("dc_monthlyquantity").setDisabled(true);
-                            }
 
                             calculatedMargin = subscriptionMargin;
                             break;
 
                         case "SUBSCRIPTION_FAMILY":
-                            showField(formContext, "dc_monthlyquantity");
-                            setRequired(formContext, "dc_monthlyquantity");
                             hideField(formContext, "dc_specialproduct");
                             calculatedMargin = subscriptionMargin;
                             break;
 
                         case "SERVICE_FAMILY":
-                            hideAndClearField(formContext, "dc_monthlyquantity");
                             hideField(formContext, "dc_specialproduct");
                             calculatedMargin = outsideLaborMargin;
                             break;
@@ -661,57 +647,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                                 </grid>
                                 `;
         return layoutXml;
-    }
-
-    // Calculate Quantity from Monthly Quantity and Contract Length
-    // Converted from D365 N52 Formula with updated contract field logic
-    async function calculateQuantityFromMonthlyAndContract(executionContext) {
-        const formContext = executionContext.getFormContext();
-        
-        const monthlyQtyAttr = formContext.getAttribute("dc_monthlyquantity");
-        const quantityAttr = formContext.getAttribute("quantity");
-
-        // Check if monthly quantity contains data and is not zero
-        if (!monthlyQtyAttr || !monthlyQtyAttr.getValue() || monthlyQtyAttr.getValue() === 0) {
-            return;
-        }
-
-        // Get the quote lookup
-        const quoteLookup = getLookupValue(formContext, "dc_quoteid") || getLookupValue(formContext, "quoteid");
-
-        if (!quoteLookup) {
-            return;
-        }
-
-        try {
-            // Retrieve the contract length from the quote
-            const quote = await Xrm.WebApi.retrieveRecord(
-                quoteLookup.entityType,
-                quoteLookup.id,
-                "?$select=dc_contractlength"
-            );
-
-            if (!quote.dc_contractlength) {
-                return;
-            }
-
-            // Convert contract length option set value to years
-            const contractTermYears = calculateContractYears(quote.dc_contractlength);
-            
-            // Calculate contract units (years * 12 months)
-            const contractUnits = contractTermYears * 12;
-            
-            // Calculate total quantity (contract units * monthly quantity)
-            const totalQuantity = contractUnits * monthlyQtyAttr.getValue();
-            
-            // Set the quantity field
-            if (quantityAttr) {
-                quantityAttr.setValue(totalQuantity);
-            }
-
-        } catch (error) {
-            console.error("Navco: Error calculating quantity from monthly quantity and contract.", error.message);
-        }
     }
 
     // Helper function to calculate contract years from option set value
