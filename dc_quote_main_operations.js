@@ -1,163 +1,6 @@
 var NavcoSdk = window.NavcoSdk || {};
 (function () {
 
-    /*----------------------------------------------------------------------------------------------------------------*/
-    /*---------------------------------------------------- Event Handlers --------------------------------------------*/
-    /*----------------------------------------------------------------------------------------------------------------*/
-    function SetWarrantyRequiredOnUpdate(formContext) {
-
-        // 2 = Update
-        if (formContext.ui.getFormType() !== 2) {
-            return;
-        }
-        setFieldRequired(formContext, "dc_warrantyoptionid");
-    }
-
-    function setFieldRequired(formContext, fieldName) {
-        var attribute = formContext.getAttribute(fieldName);
-        if (!attribute) {
-            console.warn("Attribute not found:", fieldName);
-            return;
-        }
-
-        attribute.setRequiredLevel("required");
-    }
-    // Code to run in the form OnLoad event
-    // ================================
-    // Form OnLoad Handler
-    // ================================
-    function SelectQuoteProcessAndForm(formContext) {
-
-        var QUOTE_MODEL_BOX_SALE = 948170001;
-        var QUOTE_MODEL_STANDARD = 948170000;
-        var BPF_BOX_SALE_QUOTE_TO_ORDER = "Box Sale Quote to Order";
-        var BPF_MULTIPLE_QUOTE_OPP_SALES = "Multiple Quote Opportunity Sales Process";
-
-        var quoteModelAttr = formContext.getAttribute("dc_quotemodel");
-        if (!quoteModelAttr || quoteModelAttr.getValue() === null) {
-            return;
-        }
-
-        var quoteModel = quoteModelAttr.getValue();
-        var opportunityAttr = formContext.getAttribute("opportunityid");
-        var opportunityRef = opportunityAttr ? opportunityAttr.getValue() : null;
-
-        /* -------------------------------
-           BOX SALE QUOTE
-        --------------------------------*/
-        if (quoteModel === QUOTE_MODEL_BOX_SALE) {
-
-            if (formContext.ui.getFormType() !== 1) { 
-                setBpfByName(formContext, BPF_BOX_SALE_QUOTE_TO_ORDER);
-            }
-            
-            selectFormByName(formContext, "Box Sale Quote");
-            return;
-        }
-
-        /* -------------------------------
-           STANDARD MODEL QUOTE
-        --------------------------------*/
-        if (quoteModel === QUOTE_MODEL_STANDARD) {
-            if (opportunityRef && opportunityRef.length > 0) {
-                var opportunityId = opportunityRef[0].id.replace("{", "").replace("}", "");
-
-                checkMultipleOpportunityQuotes(opportunityId, function (hasMultipleQuotes) {
-                    if (hasMultipleQuotes) {
-                        setBpfByName(formContext, BPF_MULTIPLE_QUOTE_OPP_SALES);
-                    }
-                });
-            }
-
-            selectFormByName(formContext, "Standard Model Quote");
-        }
-    };
-
-    // ================================
-    // Set BPF by Name (Environment-safe)
-    // ================================
-    function setBpfByName(formContext, processName) {
-        var fetchXml =
-            `<fetch top="1">
-            <entity name="workflow">
-                <attribute name="workflowid" />
-                <filter>
-                    <condition attribute="name" operator="eq" value="${processName}" />
-                    <condition attribute="type" operator="eq" value="1" />
-                    <condition attribute="statecode" operator="eq" value="1" />
-                </filter>
-            </entity>
-        </fetch>`;
-
-        Xrm.WebApi.retrieveMultipleRecords(
-            "workflow",
-            "?fetchXml=" + encodeURIComponent(fetchXml)
-        ).then(
-            function (result) {
-                if (result.entities.length === 0) {
-                    console.warn("BPF not found or not active:", processName);
-                    return;
-                }
-
-                var processId = result.entities[0].workflowid;
-
-                formContext.data.process.setActiveProcess(processId, function (success) {
-                    if (!success) {
-                        console.warn("Failed to set BPF:", processName);
-                    }
-                });
-
-            },
-            function (error) {
-                console.error("Error retrieving BPF:", error.message);
-            }
-        );
-    }
-
-    function selectFormByName(formContext, formName) {
-        var currentForm = formContext.ui.formSelector.getCurrentItem();
-        if (currentForm && currentForm.getLabel() === formName) {
-            return;
-        }
-
-        var forms = formContext.ui.formSelector.items.get();
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].getLabel() === formName) {
-                forms[i].navigate();
-                return;
-            }
-        }
-    }
-    // ================================
-    // Check for Multiple Active Quotes
-    // ================================
-    function checkMultipleOpportunityQuotes(opportunityId, callback) {
-        var fetchXml =
-            `<fetch distinct="true">
-            <entity name="quote">
-                <attribute name="quoteid" />
-                <filter>
-                    <condition attribute="opportunityid" operator="eq" value="${opportunityId}" />
-                    <condition attribute="statecode" operator="eq" value="0" />
-                </filter>
-            </entity>
-        </fetch>`;
-
-        Xrm.WebApi.retrieveMultipleRecords(
-            "quote",
-            "?fetchXml=" + encodeURIComponent(fetchXml)
-        ).then(
-            function (result) {
-                callback(result.entities.length > 1);
-            },
-            function (error) {
-                console.error("Error checking opportunity quotes:", error.message);
-                callback(false);
-            }
-        );
-    }
-
-
     this.HideSecuredFieldsOnCreate = function (executionContext) {
         var formContext = executionContext.getFormContext();
 
@@ -171,39 +14,6 @@ var NavcoSdk = window.NavcoSdk || {};
             formContext.getControl('dc_shippingcostoverride')?.setVisible(true);
             formContext.getControl('dc_warrantyoverridecost')?.setVisible(true);
             formContext.getControl('dc_margindollars')?.setVisible(true);
-        }
-    }
-    function isForm(formContext, formName) {
-        var currentForm = formContext.ui.formSelector.getCurrentItem();
-        return currentForm && currentForm.getLabel() === formName;
-    }
-    function checkForDiscontinuedProducts(formContext) {
-
-        const stateCode = formContext.getAttribute("statecode").getValue();
-
-        if (stateCode === 0 || stateCode === 1) {
-            const hasDiscontinuedProducts = formContext.getAttribute("dc_hasdiscontinuedproducts").getValue();
-
-            if (hasDiscontinuedProducts) {
-                formContext.ui.setFormNotification(
-                    "ERROR: This quote contains discontinued products!",
-                    "ERROR",
-                    "discprods"
-                );
-            } else {
-                formContext.ui.clearFormNotification("discprods");
-            }
-        }
-    }
-
-   function clearInstallationCenterAndDistance(executionContext) {
-        const formContext = executionContext.getFormContext();
-
-        const location = formContext.getAttribute("dc_locationid").getValue();
-
-        if (location === null || location === undefined) {
-            formContext.getAttribute("dc_installationdistance").setValue(null);
-            formContext.getAttribute("dc_installationcenterid").setValue(null);
         }
     }
 
@@ -233,6 +43,7 @@ var NavcoSdk = window.NavcoSdk || {};
             formContext.getAttribute("dc_margindollars").setValue(null);
         }
     };
+
     // Code to run in the form OnLoad event
     this.formOnLoad = async function (executionContext) {
         var formContext = executionContext.getFormContext();
@@ -308,132 +119,6 @@ var NavcoSdk = window.NavcoSdk || {};
         } else {
             formContext.getAttribute(fieldName).setRequiredLevel('none')
         }
-    }
-
-    /*----------------------------------------------------------------------------------------------------------------*/
-    /*---------------------------------------------------- Helper Methods --------------------------------------------*/
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    function onDataLoadHandler(executionContext) {
-        NavcoSdk.HideSecuredFieldsOnCreate(executionContext)
-    }
-
-    /**
-     * Check if given account is on credit hold
-     * 
-     * @param accountId
-     * @returns
-     */
-    async function isAccountOnCreditHold(accountId) {
-        var globalContext = Xrm.Utility.getGlobalContext();
-
-        var clientUrl = globalContext.getClientUrl();
-
-        var accountOnCreditHold = false;
-
-        await fetch(`${clientUrl}/api/data/v9.2/accounts(${accountId})?$select=creditonhold`)
-            .then(response => response.json())
-            .then(response => {
-                accountOnCreditHold = response.creditonhold
-            })
-            .catch(error => console.log(error));
-
-        return accountOnCreditHold;
-    }
-
-    function removeDuplicateWarrantyOptionsIfExists(formContext) {
-        var globalContext = Xrm.Utility.getGlobalContext();
-        var clientUrl = globalContext.getClientUrl();
-
-        var recordId = formContext.data.entity.getId();
-
-        // quote is not draft, then do nothing
-        if (formContext.getAttribute('statecode').getValue() != 0) {
-            console.log('nothing is done')
-            return
-        }
-
-        fetch(`${clientUrl}/api/data/v9.2/dc_warrantyoptions?$select=dc_warrantyoptionid,_dc_warrantyscheduleid_value&$filter=_dc_quoteid_value eq '${recordId}'`)
-            .then(response => response.json())
-            .then(response => {
-                const groupedWarrantyOptions = response.value.reduce((acc, ele) => {
-                    const warrantySchedule = ele._dc_warrantyscheduleid_value;
-                    if (!acc[warrantySchedule]) {
-                        acc[warrantySchedule] = [];
-                    }
-
-                    acc[warrantySchedule].push(ele);
-                    return acc;
-                },
-                    {}
-                )
-
-                Object.values(groupedWarrantyOptions)
-                    .filter(warrantyOptionGroup => warrantyOptionGroup.length > 1)
-                    .forEach(warrantyOptionGroup => {
-                        const warrantyOptionToRemove = warrantyOptionGroup[0]
-
-                        Xrm.WebApi.online.deleteRecord("dc_warrantyoption", warrantyOptionToRemove.dc_warrantyoptionid)
-                    })
-            })
-            .catch(error => console.log(error))
-    }
-
-    /**
-     * Hide 502 option from forecast profit center field for open records and when this value
-     * is not already selected
-     * 
-     * @param {*} formContext 
-     */
-    function handleForecastProfitCenterOptions(formContext) {
-        // if we are in create form, then hide option
-        if (formContext.ui.getFormType() == 1) {
-            formContext.getControl('dc_forecastprofitcenter').removeOption(808630006)
-            return
-        }
-
-        // if record is in open state and value is not selected, then hide it
-        let selectedProfitCenter = formContext.getAttribute('dc_forecastprofitcenter').getValue()
-        let state = formContext.getAttribute('statecode').getValue()
-
-        if (state == 0 && selectedProfitCenter != 808630006) {
-            formContext.getControl('dc_forecastprofitcenter').removeOption(808630006)
-            return
-        }
-    }
-
-    /**
-     * Register on change event for install difficulty display value
-     * @param {*} formContext 
-     */
-    function installDifficultyDisplayValue(formContext) {
-        formContext.getAttribute("dc_installdifficulty").addOnChange(onInstallDifficultyOptionSetChange);
-        setInstallDifficultyDisplayValue(formContext)
-    }
-
-    function onInstallDifficultyOptionSetChange(executionContext) {
-        const formContext = executionContext.getFormContext()
-        const optionSetValue = formContext.getAttribute("dc_installdifficulty").getValue()
-
-        formContext.getAttribute("dc_installdifficultydisplay").setValue(getInstallDifficultyDisplayValue(optionSetValue))
-    }
-
-    function getInstallDifficultyDisplayValue(value) {
-        switch (value) {
-            case 948170000:
-                return "Open Ceiling or Push-Up Tile <12' Ceiling Height"
-            case 948170001:
-                return "Interlocking Tile, Solid, or Sheetrock, <12' Ceiling Height"
-            case 948170002:
-                return "Any Ceiling Height >12'; Lift Required"
-            default:
-                return ""
-        }
-    }
-
-    function setInstallDifficultyDisplayValue(formContext) {
-        var optionSetValue = formContext.getAttribute("dc_installdifficulty").getValue()
-        formContext.getAttribute("dc_installdifficultydisplay").setValue(getInstallDifficultyDisplayValue(optionSetValue))
     }
 
     this.laborPriceMethod = function (executionContext) {
@@ -525,7 +210,8 @@ var NavcoSdk = window.NavcoSdk || {};
             formContext.ui.clearFormNotification("invalidlocation");
         }
     }
-     this.RecalculateInstallationDistance = function (formContext) {
+
+    this.RecalculateInstallationDistance = function (formContext) {
         var confirmStrings = { text: "Are you sure you want to recalculate the installation center and distance?", title: "Confirmation Dialog" };
         var confirmOptions = { height: 200, width: 450 };
 
@@ -571,6 +257,303 @@ var NavcoSdk = window.NavcoSdk || {};
             });
 
     };
+
+    function SetWarrantyRequiredOnUpdate(formContext) {
+
+        // 2 = Update
+        if (formContext.ui.getFormType() !== 2) {
+            return;
+        }
+        setFieldRequired(formContext, "dc_warrantyoptionid");
+    }
+
+    function setFieldRequired(formContext, fieldName) {
+        var attribute = formContext.getAttribute(fieldName);
+        if (!attribute) {
+            console.warn("Attribute not found:", fieldName);
+            return;
+        }
+
+        attribute.setRequiredLevel("required");
+    }
+
+    // Code to run in the form OnLoad event
+    // ================================
+    // Form OnLoad Handler
+    // ================================
+    function SelectQuoteProcessAndForm(formContext) {
+
+        var QUOTE_MODEL_BOX_SALE = 948170001;
+        var QUOTE_MODEL_STANDARD = 948170000;
+        var BPF_BOX_SALE_QUOTE_TO_ORDER = "Box Sale Quote to Order";
+        var BPF_MULTIPLE_QUOTE_OPP_SALES = "Multiple Quote Opportunity Sales Process";
+
+        var quoteModelAttr = formContext.getAttribute("dc_quotemodel");
+        if (!quoteModelAttr || quoteModelAttr.getValue() === null) {
+            return;
+        }
+
+        var quoteModel = quoteModelAttr.getValue();
+        var opportunityAttr = formContext.getAttribute("opportunityid");
+        var opportunityRef = opportunityAttr ? opportunityAttr.getValue() : null;
+
+        /* -------------------------------
+           BOX SALE QUOTE
+        --------------------------------*/
+        if (quoteModel === QUOTE_MODEL_BOX_SALE) {
+
+            if (formContext.ui.getFormType() !== 1) { //on Create
+                setBpfByName(formContext, BPF_BOX_SALE_QUOTE_TO_ORDER);
+            }
+
+            selectFormByName(formContext, "Box Sale Quote");
+            return;
+        }
+
+        /* -------------------------------
+           STANDARD MODEL QUOTE
+        --------------------------------*/
+        if (quoteModel === QUOTE_MODEL_STANDARD) {
+            if (opportunityRef && opportunityRef.length > 0) {
+                var opportunityId = opportunityRef[0].id.replace("{", "").replace("}", "");
+
+                checkMultipleOpportunityQuotes(opportunityId, function (hasMultipleQuotes) {
+                    if (hasMultipleQuotes) {
+                        setBpfByName(formContext, BPF_MULTIPLE_QUOTE_OPP_SALES);
+                    }
+                });
+            }
+
+            selectFormByName(formContext, "Standard Model Quote");
+        }
+    };
+
+    // ================================
+    // Set BPF by Name (Environment-safe)
+    // ================================
+    function setBpfByName(formContext, processName) {
+        var fetchXml =
+            `<fetch top="1">
+            <entity name="workflow">
+                <attribute name="workflowid" />
+                <filter>
+                    <condition attribute="name" operator="eq" value="${processName}" />
+                    <condition attribute="type" operator="eq" value="1" />
+                    <condition attribute="statecode" operator="eq" value="1" />
+                </filter>
+            </entity>
+        </fetch>`;
+
+        Xrm.WebApi.retrieveMultipleRecords(
+            "workflow",
+            "?fetchXml=" + encodeURIComponent(fetchXml)
+        ).then(
+            function (result) {
+                if (result.entities.length === 0) {
+                    console.warn("BPF not found or not active:", processName);
+                    return;
+                }
+
+                var processId = result.entities[0].workflowid;
+
+                formContext.data.process.setActiveProcess(processId, function (success) {
+                    if (!success) {
+                        console.warn("Failed to set BPF:", processName);
+                    }
+                });
+
+            },
+            function (error) {
+                console.error("Error retrieving BPF:", error.message);
+            }
+        );
+    }
+
+    function selectFormByName(formContext, formName) {
+        var currentForm = formContext.ui.formSelector.getCurrentItem();
+        if (currentForm && currentForm.getLabel() === formName) {
+            return;
+        }
+
+        var forms = formContext.ui.formSelector.items.get();
+        for (var i = 0; i < forms.length; i++) {
+            if (forms[i].getLabel() === formName) {
+                forms[i].navigate();
+                return;
+            }
+        }
+    }
+
+    // Check for Multiple Active Quotes
+    function checkMultipleOpportunityQuotes(opportunityId, callback) {
+        var fetchXml =
+            `<fetch distinct="true">
+            <entity name="quote">
+                <attribute name="quoteid" />
+                <filter>
+                    <condition attribute="opportunityid" operator="eq" value="${opportunityId}" />
+                    <condition attribute="statecode" operator="eq" value="0" />
+                </filter>
+            </entity>
+        </fetch>`;
+
+        Xrm.WebApi.retrieveMultipleRecords(
+            "quote",
+            "?fetchXml=" + encodeURIComponent(fetchXml)
+        ).then(
+            function (result) {
+                callback(result.entities.length > 1);
+            },
+            function (error) {
+                console.error("Error checking opportunity quotes:", error.message);
+                callback(false);
+            }
+        );
+    }
+
+    function isForm(formContext, formName) {
+        var currentForm = formContext.ui.formSelector.getCurrentItem();
+        return currentForm && currentForm.getLabel() === formName;
+    }
+
+    function checkForDiscontinuedProducts(formContext) {
+
+        const stateCode = formContext.getAttribute("statecode").getValue();
+
+        if (stateCode === 0 || stateCode === 1) {
+            const hasDiscontinuedProducts = formContext.getAttribute("dc_hasdiscontinuedproducts").getValue();
+
+            if (hasDiscontinuedProducts) {
+                formContext.ui.setFormNotification(
+                    "ERROR: This quote contains discontinued products!",
+                    "ERROR",
+                    "discprods"
+                );
+            } else {
+                formContext.ui.clearFormNotification("discprods");
+            }
+        }
+    }
+
+    function clearInstallationCenterAndDistance(executionContext) {
+        const formContext = executionContext.getFormContext();
+
+        const location = formContext.getAttribute("dc_locationid").getValue();
+
+        if (location === null || location === undefined) {
+            formContext.getAttribute("dc_installationdistance").setValue(null);
+            formContext.getAttribute("dc_installationcenterid").setValue(null);
+        }
+    }
+
+    function onDataLoadHandler(executionContext) {
+        NavcoSdk.HideSecuredFieldsOnCreate(executionContext)
+    }
+
+    async function isAccountOnCreditHold(accountId) {
+        var globalContext = Xrm.Utility.getGlobalContext();
+
+        var clientUrl = globalContext.getClientUrl();
+
+        var accountOnCreditHold = false;
+
+        await fetch(`${clientUrl}/api/data/v9.2/accounts(${accountId})?$select=creditonhold`)
+            .then(response => response.json())
+            .then(response => {
+                accountOnCreditHold = response.creditonhold
+            })
+            .catch(error => console.log(error));
+
+        return accountOnCreditHold;
+    }
+
+    function removeDuplicateWarrantyOptionsIfExists(formContext) {
+        var globalContext = Xrm.Utility.getGlobalContext();
+        var clientUrl = globalContext.getClientUrl();
+
+        var recordId = formContext.data.entity.getId();
+
+        // quote is not draft, then do nothing
+        if (formContext.getAttribute('statecode').getValue() != 0) {
+            console.log('nothing is done')
+            return
+        }
+
+        fetch(`${clientUrl}/api/data/v9.2/dc_warrantyoptions?$select=dc_warrantyoptionid,_dc_warrantyscheduleid_value&$filter=_dc_quoteid_value eq '${recordId}'`)
+            .then(response => response.json())
+            .then(response => {
+                const groupedWarrantyOptions = response.value.reduce((acc, ele) => {
+                    const warrantySchedule = ele._dc_warrantyscheduleid_value;
+                    if (!acc[warrantySchedule]) {
+                        acc[warrantySchedule] = [];
+                    }
+
+                    acc[warrantySchedule].push(ele);
+                    return acc;
+                },
+                    {}
+                )
+
+                Object.values(groupedWarrantyOptions)
+                    .filter(warrantyOptionGroup => warrantyOptionGroup.length > 1)
+                    .forEach(warrantyOptionGroup => {
+                        const warrantyOptionToRemove = warrantyOptionGroup[0]
+
+                        Xrm.WebApi.online.deleteRecord("dc_warrantyoption", warrantyOptionToRemove.dc_warrantyoptionid)
+                    })
+            })
+            .catch(error => console.log(error))
+    }
+
+    // Hide 502 option from forecast profit center field for open records and when this value
+    // is not already selected
+    function handleForecastProfitCenterOptions(formContext) {
+        // if we are in create form, then hide option
+        if (formContext.ui.getFormType() == 1) {
+            formContext.getControl('dc_forecastprofitcenter').removeOption(808630006)
+            return
+        }
+
+        // if record is in open state and value is not selected, then hide it
+        let selectedProfitCenter = formContext.getAttribute('dc_forecastprofitcenter').getValue()
+        let state = formContext.getAttribute('statecode').getValue()
+
+        if (state == 0 && selectedProfitCenter != 808630006) {
+            formContext.getControl('dc_forecastprofitcenter').removeOption(808630006)
+            return
+        }
+    }
+
+    // Register on change event for install difficulty display value
+    function installDifficultyDisplayValue(formContext) {
+        formContext.getAttribute("dc_installdifficulty").addOnChange(onInstallDifficultyOptionSetChange);
+        setInstallDifficultyDisplayValue(formContext)
+    }
+
+    function onInstallDifficultyOptionSetChange(executionContext) {
+        const formContext = executionContext.getFormContext()
+        const optionSetValue = formContext.getAttribute("dc_installdifficulty").getValue()
+
+        formContext.getAttribute("dc_installdifficultydisplay").setValue(getInstallDifficultyDisplayValue(optionSetValue))
+    }
+
+    function getInstallDifficultyDisplayValue(value) {
+        switch (value) {
+            case 948170000:
+                return "Open Ceiling or Push-Up Tile <12' Ceiling Height"
+            case 948170001:
+                return "Interlocking Tile, Solid, or Sheetrock, <12' Ceiling Height"
+            case 948170002:
+                return "Any Ceiling Height >12'; Lift Required"
+            default:
+                return ""
+        }
+    }
+
+    function setInstallDifficultyDisplayValue(formContext) {
+        var optionSetValue = formContext.getAttribute("dc_installdifficulty").getValue()
+        formContext.getAttribute("dc_installdifficultydisplay").setValue(getInstallDifficultyDisplayValue(optionSetValue))
+    }
 
 }).call(NavcoSdk);
 
