@@ -6,7 +6,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         const formContext = executionContext.getFormContext()
         lockFormWhenRelatedQuoteIsPendingApproval(formContext);
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
-        setCostOverrideDescriptionRequired(formContext);
+        setCostOverrideDescriptionRequired(executionContext);
         filterProducts(executionContext);
         SetMarginsAndDefaults(executionContext);
     }
@@ -44,16 +44,12 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     this.onCostOverrideChange = function (executionContext) {
         SetMarginsAndDefaults(executionContext);
-        setCostOverrideDescriptionRequiredInOnChange(executionContext);
-    }
-
-    this.onMonthlyQuantityChange = function (executionContext) {
+        setCostOverrideDescriptionRequired(executionContext);
     }
 
     this.selectedsearchproductidOnChange = function (executionContext) {
         updateProductFromSearchControl(executionContext);
     }
-
 
     // check if given control is an ifrmae, webresource or a subgrid.
     function doesControlHaveAttribute(control) {
@@ -133,6 +129,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         forceDisablePriceFields(formContext);
 
     }
+
     function forceDisablePriceFields(formContext) {
 
         setTimeout(function () {
@@ -263,21 +260,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         if (attr) attr.setRequiredLevel("none");
     }
 
-    function hideAndClearField(formContext, fieldName) {
-        hideField(formContext, fieldName);
-
-        var attr = formContext.getAttribute(fieldName);
-        if (attr) {
-            attr.setValue(null);
-            attr.setRequiredLevel("none");
-        }
-    }
-
-    function setRequired(formContext, fieldName) {
-        var attr = formContext.getAttribute(fieldName);
-        if (attr) attr.setRequiredLevel("required");
-    }
-
     // Quote Model Product Family Validation
     async function productFamilyValidation(executionContext) {
 
@@ -393,7 +375,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     // Update Product From Search Control
     // Converted from D365 N52 Formula
-   async function updateProductFromSearchControl(executionContext) {
+    async function updateProductFromSearchControl(executionContext) {
         const formContext = executionContext.getFormContext();
 
         // Check if dc_selectedsearchproductid contains data
@@ -476,13 +458,9 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
     }
 
     // Set Cost Override Description Required
-    // Converted from D365 N52 Formula
-   function setCostOverrideDescriptionRequiredInOnChange(executionContext) {
+    function setCostOverrideDescriptionRequired(executionContext) {
         const formContext = executionContext.getFormContext();
-        setCostOverrideDescriptionRequired(formContext);
-    }
 
-    function setCostOverrideDescriptionRequired(formContext) {
         // Check if dc_costoverride contains data
         const costOverrideAttr = formContext.getAttribute("dc_costoverride");
         const overrideDescriptionAttr = formContext.getAttribute("dc_overridedescription");
@@ -647,25 +625,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
                                 </grid>
                                 `;
         return layoutXml;
-    }
-
-    // Helper function to calculate contract years from option set value
-    // Equivalent to backend CalculateContractYears method
-    function calculateContractYears(contractTermOptionSetValue) {
-        switch (contractTermOptionSetValue) {
-            case 948170000:
-                return 1;
-            case 948170001:
-                return 2;
-            case 948170002:
-                return 3;
-            case 948170003:
-                return 4;
-            case 948170004:
-                return 5;
-            default:
-                return 1;
-        }
     }
 
 }).call(NavcoQuoteLineSdk)
