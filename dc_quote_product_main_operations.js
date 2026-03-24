@@ -120,8 +120,11 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         formContext.ui.controls.forEach(function (control) {
 
             if (control && control.setDisabled) {
-                // Optional: skip controls you donâ€™t want locked
-                // if (control.getName() === "dc_quoteid") return;
+                // skip controls you dont want locked
+                // if (control.getName() === "dc_quoteid" ||
+                //     control.getName() === "priceperunit" ||
+                //     control.getName() === "ispriceoverridden")
+                //      return;
                 control.setDisabled(true);
             }
         });
@@ -130,13 +133,13 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     }
 
-    function forceDisablePriceFields(formContext) {
-
-        setTimeout(function () {
-            formContext.getControl("priceperunit")?.setDisabled(true);
-            formContext.getControl("ispriceoverridden")?.setDisabled(true);
-        }, 1500); // 1 second delay
-    }
+        function forceDisablePriceFields(formContext) {
+    
+            setTimeout(function () {
+                formContext.getControl("priceperunit")?.setDisabled(true);
+                formContext.getControl("ispriceoverridden")?.setDisabled(true);
+            }, 1500); // 1 second delay
+        }
 
     function SetMarginsAndDefaults(executionContext) {
 
@@ -414,6 +417,8 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
             const productIdAttr = formContext.getAttribute("productid");
             if (productIdAttr) {
                 productIdAttr.setValue(lookupValue);
+                productIdAttr.fireOnChange();
+
             }
 
         } catch (error) {
@@ -445,6 +450,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
             const productIdAttr = formContext.getAttribute("productid");
             if (productIdAttr) {
                 productIdAttr.setValue(lookupValue);
+                productIdAttr.fireOnChange();
             }
 
         } else {
