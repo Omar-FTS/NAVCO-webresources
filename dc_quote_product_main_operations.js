@@ -133,13 +133,13 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
 
     }
 
-        function forceDisablePriceFields(formContext) {
-    
-            setTimeout(function () {
-                formContext.getControl("priceperunit")?.setDisabled(true);
-                formContext.getControl("ispriceoverridden")?.setDisabled(true);
-            }, 1500); // 1 second delay
-        }
+    function forceDisablePriceFields(formContext) {
+
+        setTimeout(function () {
+            formContext.getControl("priceperunit")?.setDisabled(true);
+            formContext.getControl("ispriceoverridden")?.setDisabled(true);
+        }, 1500); // 1 second delay
+    }
 
     function SetMarginsAndDefaults(executionContext) {
 
