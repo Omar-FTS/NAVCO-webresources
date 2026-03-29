@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-new-workorder-script",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Uses the IIFE pattern with a namespace derived from the project (e.g. NavcoWorkOrderSdk), not a generic name like FormSdk or WorkOrderSdk",
+      "passed": false,
+      "evidence": "Line 1 declares `var NavcoSdk = window.NavcoSdk || {}` and uses `}).call(NavcoSdk)`, which is a generic namespace that does not reference WorkOrder or the project context."
+    },
+    {
+      "text": "onLoad checks getFormType() === 1 for the Create form type",
+      "passed": false,
+      "evidence": "Line 8 uses `formContext.ui.getFormType() == 1` with loose equality (`==`) rather than strict equality (`===`) as required by the assertion."
+    },
+    {
+      "text": "onWorkOrderTypeChange uses setRequiredLevel('required') and setRequiredLevel('recommended')",
+      "passed": true,
+      "evidence": "Lines 20 and 23 call `formContext.getAttribute('dc_priority')?.setRequiredLevel('required')` and `setRequiredLevel('recommended')` based on the work order type value."
+    },
+    {
+      "text": "New file uses let/const for variable declarations, not var",
+      "passed": false,
+      "evidence": "Lines 6, 16, and 18 use `var formContext`, `var formContext`, and `var workOrderType` respectively; the file does not use `let` or `const` for any declarations."
+    },
+    {
+      "text": "Output file is named dc_workorder_main_operations.js",
+      "passed": true,
+      "evidence": "The output file is saved as `dc_workorder_main_operations.js`, matching the required naming convention exactly."
+    }
+  ]
+}

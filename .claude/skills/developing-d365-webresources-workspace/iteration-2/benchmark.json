@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "skill_name": "developing-d365-webresources",
+    "skill_path": "C:\\Users\\Omar Taladeh\\Desktop\\web-resources\\NAVCO\\.claude\\skills\\developing-d365-webresources",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-03-29T13:44:57Z",
+    "evals_run": ["eval-hide-overrideprice", "eval-ribbon-approval", "eval-new-workorder-script"],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "eval-hide-overrideprice",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 4,
+      "total": 4,
+      "duration_seconds": 110.7,
+      "tokens": 30310
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-hide-overrideprice",
+      "configuration": "without_skill",
+      "pass_rate": 1.0,
+      "passed": 4,
+      "total": 4,
+      "duration_seconds": 101.6,
+      "tokens": 24932
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-ribbon-approval",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 5,
+      "total": 5,
+      "duration_seconds": 44.4,
+      "tokens": 22251
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-ribbon-approval",
+      "configuration": "without_skill",
+      "pass_rate": 0.8,
+      "passed": 4,
+      "total": 5,
+      "duration_seconds": 37.5,
+      "tokens": 12495
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-new-workorder-script",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 5,
+      "total": 5,
+      "duration_seconds": 39.3,
+      "tokens": 33129
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-new-workorder-script",
+      "configuration": "without_skill",
+      "pass_rate": 0.4,
+      "passed": 2,
+      "total": 5,
+      "duration_seconds": 37.1,
+      "tokens": 24893
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate_mean": 1.0,
+      "pass_rate_stddev": 0.0,
+      "time_mean": 64.8,
+      "tokens_mean": 28563
+    },
+    "without_skill": {
+      "pass_rate_mean": 0.733,
+      "pass_rate_stddev": 0.265,
+      "time_mean": 58.7,
+      "tokens_mean": 20773
+    },
+    "delta": {
+      "pass_rate": "+0.27",
+      "time_seconds": "+6.1",
+      "tokens": "+7790"
+    }
+  },
+  "notes": [
+    "Eval 1 (hide-overrideprice) is non-discriminating — both configurations scored 100%. Both correctly inferred the pattern from reading the existing file. Consider replacing with a harder eval.",
+    "Eval 2 (ribbon-approval): skill benefit on try/catch/finally+progress indicator pattern. Baseline used promise chains without progress indicator.",
+    "Eval 3 (new-workorder-script): biggest delta (100% vs 40%). Baseline used generic 'NavcoSdk' namespace, loose equality (==), and var declarations. All three caught by the skill."
+  ]
+}

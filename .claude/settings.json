@@ -1,4 +1,7 @@
 {
+  "enabledPlugins": {
+    "adw@adw-marketplace": true
+  },
   "extraKnownMarketplaces": {
     "adw-marketplace": {
       "source": {
@@ -6,8 +9,5 @@
         "repo": "FoothillSolutions/agent_playground"
       }
     }
-  },
-  "enabledPlugins": {
-    "adw@adw-marketplace": true
   }
 }

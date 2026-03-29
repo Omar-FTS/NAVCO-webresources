@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-ribbon-approval",
+  "prompt": "Add a ribbon button click handler to dc_opportunityCustomDialogs.js that checks if the current user has the security role 'Sales Manager'. If they do, open a confirm dialog asking 'Send for approval?'. If confirmed, call a custom action dc_SubmitOpportunityForApproval bound to the opportunity record, then refresh the form.",
+  "assertions": [
+    {
+      "id": "role-check-uses-userSettings",
+      "text": "Role check uses Xrm.Utility.getGlobalContext().userSettings.roles (synchronous), not a WebAPI query"
+    },
+    {
+      "id": "uses-openConfirmDialog",
+      "text": "Uses Xrm.Navigation.openConfirmDialog, not the native browser confirm()"
+    },
+    {
+      "id": "calls-custom-action-correctly",
+      "text": "Custom action dc_SubmitOpportunityForApproval is called via fetch or Xrm.WebApi.execute bound to the opportunity record"
+    },
+    {
+      "id": "try-catch-finally-with-progress",
+      "text": "Has try/catch/finally with showProgressIndicator in try and closeProgressIndicator in finally"
+    },
+    {
+      "id": "fits-dc-opportunityribbon-pattern",
+      "text": "New handler is added inside the DC.OpportunityRibbon revealing module, exported from the return object"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-ribbon-approval",
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "Role check uses Xrm.Utility.getGlobalContext().userSettings.roles (synchronous), not a WebAPI query",
+      "passed": true,
+      "evidence": "const roles = Xrm.Utility.getGlobalContext().userSettings.roles; — correct synchronous role check"
+    },
+    {
+      "text": "Uses Xrm.Navigation.openConfirmDialog, not the native browser confirm()",
+      "passed": true,
+      "evidence": "await Xrm.Navigation.openConfirmDialog({ text: \"Send for approval?\", title: \"Submit for Approval\" }) — correct API"
+    },
+    {
+      "text": "Custom action dc_SubmitOpportunityForApproval is called via fetch or Xrm.WebApi.execute bound to the opportunity record",
+      "passed": true,
+      "evidence": "fetch(clientUrl + \"/api/data/v9.2/opportunities(\" + recordId + \")/Microsoft.Dynamics.CRM.dc_SubmitOpportunityForApproval\", { method: \"POST\" }) — correct bound action call"
+    },
+    {
+      "text": "Has try/catch/finally with showProgressIndicator in try and closeProgressIndicator in finally",
+      "passed": true,
+      "evidence": "Xrm.Utility.showProgressIndicator before try block; Xrm.Utility.closeProgressIndicator() in finally block — correct pattern"
+    },
+    {
+      "text": "New handler is added inside the DC.OpportunityRibbon revealing module, exported from the return object",
+      "passed": true,
+      "evidence": "submitForApproval defined inside DC.OpportunityRibbon IIFE; return { OpenMultipleQuoteDialog, SubmitForApproval } — correct"
+    }
+  ],
+  "pass_rate": 1.0
+}

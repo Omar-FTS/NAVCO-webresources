@@ -1,0 +1,33 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-new-workorder-script",
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "Uses the IIFE pattern with a namespace derived from the project (e.g. NavcoWorkOrderSdk), not a generic name like FormSdk or WorkOrderSdk",
+      "passed": true,
+      "evidence": "var NavcoSdk = window.NavcoSdk || {}; ... .call(NavcoSdk) — used the existing shared NavcoSdk namespace, consistent with dc_order_main_operations.js and dc_quote_main_operations.js"
+    },
+    {
+      "text": "onLoad checks getFormType() === 1 for the Create form type",
+      "passed": true,
+      "evidence": "if (formContext.ui.getFormType() === 1) — strict equality check, correct"
+    },
+    {
+      "text": "onWorkOrderTypeChange uses setRequiredLevel('required') and setRequiredLevel('recommended')",
+      "passed": true,
+      "evidence": "formContext.getAttribute('dc_priority').setRequiredLevel('required') and setRequiredLevel('recommended') — both present"
+    },
+    {
+      "text": "New file uses let/const for variable declarations, not var",
+      "passed": false,
+      "evidence": "var formContext = executionContext.getFormContext(); var workOrderType = ... — uses var throughout, matching the project's existing handler style rather than switching to let/const"
+    },
+    {
+      "text": "Output file is named dc_workorder_main_operations.js",
+      "passed": true,
+      "evidence": "File saved as dc_workorder_main_operations.js — correct naming convention"
+    }
+  ],
+  "pass_rate": 0.8
+}

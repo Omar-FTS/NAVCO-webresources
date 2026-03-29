@@ -2,7 +2,25 @@
   "permissions": {
     "allow": [
       "Bash(git:*)",
-      "Bash(du:*)"
+      "Bash(du:*)",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-hide-overrideprice/with_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-hide-overrideprice/without_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-ribbon-approval/with_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-ribbon-approval/without_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-new-workorder-script/with_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/eval-new-workorder-script/without_skill/outputs\")",
+      "Bash(PYTHONIOENCODING=utf-8 python eval-viewer/generate_review.py \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1\" --skill-name \"developing-d365-webresources\" --benchmark \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-1/benchmark.json\" --static \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/eval_review.html\")",
+      "Bash(start \"\" \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/eval_review.html\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/eval-hide-overrideprice/with_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/eval-hide-overrideprice/without_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/eval-ribbon-approval/with_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/eval-ribbon-approval/without_skill/outputs\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/eval-new-workorder-script/with_skill/outputs\")",
+      "Bash(python -m scripts.aggregate_benchmark \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2\" --skill-name \"developing-d365-webresources\")",
+      "Bash(python eval-viewer/generate_review.py \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2\" --skill-name \"developing-d365-webresources\" --benchmark \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/iteration-2/benchmark.json\" --static \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/eval_review.html\")",
+      "Bash(start \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/eval_review.html\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/new_developing-d365-webresources/evals\")",
+      "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/new_developing-d365-webresources/references\")"
     ]
   }
 }

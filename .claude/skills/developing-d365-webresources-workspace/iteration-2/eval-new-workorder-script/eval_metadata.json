@@ -1,0 +1,27 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-new-workorder-script",
+  "prompt": "Create a new form script file for the dc_workorder entity. On load, if the form type is Create (1), hide dc_completiondate and dc_technicianid. On field change of dc_workordertype, if the value is 100000001 (Emergency), make dc_priority required and show dc_escalationreason. Otherwise make dc_priority recommended and hide dc_escalationreason.",
+  "assertions": [
+    {
+      "id": "iife-pattern-correct-namespace",
+      "text": "Uses the IIFE pattern with a namespace derived from the project (e.g. NavcoWorkOrderSdk), not a generic name like FormSdk or WorkOrderSdk"
+    },
+    {
+      "id": "onload-checks-formtype-create",
+      "text": "onLoad checks getFormType() === 1 for the Create form type"
+    },
+    {
+      "id": "uses-setRequiredLevel",
+      "text": "onWorkOrderTypeChange uses setRequiredLevel('required') and setRequiredLevel('recommended')"
+    },
+    {
+      "id": "uses-let-const-not-var",
+      "text": "New file uses let/const for variable declarations, not var"
+    },
+    {
+      "id": "file-named-correctly",
+      "text": "Output file is named dc_workorder_main_operations.js"
+    }
+  ]
+}

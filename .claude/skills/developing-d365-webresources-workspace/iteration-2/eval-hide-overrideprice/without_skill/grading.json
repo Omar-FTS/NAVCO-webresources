@@ -1,0 +1,27 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-hide-overrideprice",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Uses setVisible(true/false) on the dc_overrideprice control",
+      "passed": true,
+      "evidence": "Lines 163 and 165 call `control.setVisible(false)` and `control.setVisible(true)` on the `dc_overrideprice` control retrieved via `formContext.getControl(\"dc_overrideprice\")`."
+    },
+    {
+      "text": "Retrieves the quote statecode via Xrm.WebApi or fetch, not by reading a form field directly",
+      "passed": true,
+      "evidence": "Line 157 uses `Xrm.WebApi.retrieveRecord(\"quote\", relatedQuoteId, \"?$select=statecode\")` to retrieve the statecode from the API."
+    },
+    {
+      "text": "Code is added inside the NavcoQuoteLineSdk IIFE, not as a global function",
+      "passed": true,
+      "evidence": "The file uses `var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {}` and `(function () { ... }).call(NavcoQuoteLineSdk)`, and `toggleOverridePriceVisibility` is a private function inside the IIFE."
+    },
+    {
+      "text": "Guards against null/empty quoteid before calling .getValue()[0]",
+      "passed": true,
+      "evidence": "Lines 149–151 check `!quoteAttr || !quoteAttr.getValue()` before calling `.getValue()[0].id`, preventing a null-dereference on a missing lookup."
+    }
+  ]
+}

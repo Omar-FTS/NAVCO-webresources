@@ -1,0 +1,111 @@
+{
+  "skill_name": "developing-d365-webresources",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {
+          "eval_id": 1,
+          "eval_name": "eval-hide-overrideprice",
+          "pass_rate": 1.0,
+          "assertions": [
+            { "text": "Uses setVisible(true/false) on dc_overrideprice", "passed": true },
+            { "text": "Retrieves quote statecode via WebAPI/fetch", "passed": true },
+            { "text": "Stays inside NavcoQuoteLineSdk IIFE", "passed": true },
+            { "text": "Null guard on quoteid before .getValue()[0]", "passed": true }
+          ],
+          "duration_ms": null,
+          "total_tokens": null,
+          "note": "baseline agent still pending"
+        },
+        {
+          "eval_id": 2,
+          "eval_name": "eval-ribbon-approval",
+          "pass_rate": 1.0,
+          "assertions": [
+            { "text": "Role check uses userSettings.roles (sync)", "passed": true },
+            { "text": "Uses openConfirmDialog not browser confirm()", "passed": true },
+            { "text": "Custom action called via fetch or Xrm.WebApi.execute", "passed": true },
+            { "text": "try/catch/finally with progress indicator", "passed": true },
+            { "text": "Inside DC.OpportunityRibbon, exported from return", "passed": true }
+          ],
+          "duration_ms": 41415,
+          "total_tokens": 22563
+        },
+        {
+          "eval_id": 3,
+          "eval_name": "eval-new-workorder-script",
+          "pass_rate": 0.8,
+          "assertions": [
+            { "text": "IIFE with Navco-prefixed namespace", "passed": true },
+            { "text": "getFormType() === 1 strict equality", "passed": true },
+            { "text": "setRequiredLevel used for required/recommended", "passed": true },
+            { "text": "Uses let/const not var", "passed": false },
+            { "text": "File named dc_workorder_main_operations.js", "passed": true }
+          ],
+          "duration_ms": 51881,
+          "total_tokens": 28434
+        }
+      ],
+      "mean_pass_rate": 0.933,
+      "mean_duration_ms": 46648,
+      "mean_tokens": 25498
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {
+          "eval_id": 1,
+          "eval_name": "eval-hide-overrideprice",
+          "pass_rate": 0.75,
+          "assertions": [
+            { "text": "Uses setVisible(true/false) on dc_overrideprice", "passed": true },
+            { "text": "Retrieves quote statecode via WebAPI/fetch", "passed": true },
+            { "text": "Stays inside NavcoQuoteLineSdk IIFE", "passed": true },
+            { "text": "Null guard on quoteid before .getValue()[0]", "passed": false }
+          ],
+          "duration_ms": null,
+          "total_tokens": null,
+          "note": "agent still pending — graded from manually-authored baseline output"
+        },
+        {
+          "eval_id": 2,
+          "eval_name": "eval-ribbon-approval",
+          "pass_rate": 0.8,
+          "assertions": [
+            { "text": "Role check uses userSettings.roles (sync)", "passed": true },
+            { "text": "Uses openConfirmDialog not browser confirm()", "passed": true },
+            { "text": "Custom action called via fetch or Xrm.WebApi.execute", "passed": true },
+            { "text": "try/catch/finally with progress indicator", "passed": false },
+            { "text": "Inside DC.OpportunityRibbon, exported from return", "passed": true }
+          ],
+          "duration_ms": 51195,
+          "total_tokens": 10920
+        },
+        {
+          "eval_id": 3,
+          "eval_name": "eval-new-workorder-script",
+          "pass_rate": 0.6,
+          "assertions": [
+            { "text": "IIFE with Navco-prefixed namespace", "passed": true },
+            { "text": "getFormType() === 1 strict equality", "passed": false },
+            { "text": "setRequiredLevel used for required/recommended", "passed": true },
+            { "text": "Uses let/const not var", "passed": false },
+            { "text": "File named dc_workorder_main_operations.js", "passed": true }
+          ],
+          "duration_ms": 58793,
+          "total_tokens": 24682
+        }
+      ],
+      "mean_pass_rate": 0.717,
+      "mean_duration_ms": 54994,
+      "mean_tokens": 17801
+    }
+  ],
+  "delta": {
+    "pass_rate": "+0.216",
+    "duration_ms": "-8346 (with_skill faster)",
+    "tokens": "+7697 (with_skill uses more tokens)"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-ribbon-approval",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Role check uses Xrm.Utility.getGlobalContext().userSettings.roles (synchronous), not a WebAPI query",
+      "passed": true,
+      "evidence": "Line 39 uses `Xrm.Utility.getGlobalContext().userSettings.roles` synchronously inside `submitForApproval`, iterating with `forEach` to find the Sales Manager role."
+    },
+    {
+      "text": "Uses Xrm.Navigation.openConfirmDialog, not the native browser confirm()",
+      "passed": true,
+      "evidence": "Line 62 calls `Xrm.Navigation.openConfirmDialog(confirmStrings).then(...)`, not the native browser `confirm()` function."
+    },
+    {
+      "text": "Custom action dc_SubmitOpportunityForApproval is called via fetch or Xrm.WebApi.execute bound to the opportunity record",
+      "passed": true,
+      "evidence": "Lines 67–82 call `Xrm.WebApi.online.execute(actionRequest)` where `actionRequest` specifies `operationName: \"dc_SubmitOpportunityForApproval\"` bound to the opportunity entity with `boundParameter: \"entity\"`."
+    },
+    {
+      "text": "Has try/catch/finally with showProgressIndicator in try and closeProgressIndicator in finally",
+      "passed": false,
+      "evidence": "The `submitForApproval` function contains no `try/catch/finally` block and no calls to `showProgressIndicator` or `closeProgressIndicator`; error handling is done only via a `.then` rejection callback."
+    },
+    {
+      "text": "New handler is added inside the DC.OpportunityRibbon revealing module, exported from the return object",
+      "passed": true,
+      "evidence": "`submitForApproval` is defined as a private function inside the `DC.OpportunityRibbon` IIFE and exported on line 97 as `SubmitForApproval: submitForApproval` in the return object."
+    }
+  ]
+}

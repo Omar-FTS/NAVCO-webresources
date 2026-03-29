@@ -1,0 +1,33 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-ribbon-approval",
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "Role check uses Xrm.Utility.getGlobalContext().userSettings.roles (synchronous), not a WebAPI query",
+      "passed": true,
+      "evidence": "var userRoles = Xrm.Utility.getGlobalContext().userSettings.roles; — correct synchronous role check"
+    },
+    {
+      "text": "Uses Xrm.Navigation.openConfirmDialog, not the native browser confirm()",
+      "passed": true,
+      "evidence": "Xrm.Navigation.openConfirmDialog(confirmStrings).then(...) — correct API"
+    },
+    {
+      "text": "Custom action dc_SubmitOpportunityForApproval is called via fetch or Xrm.WebApi.execute bound to the opportunity record",
+      "passed": true,
+      "evidence": "Xrm.WebApi.online.execute(actionRequest) with getMetadata returning boundParameter: \"entity\" — valid approach"
+    },
+    {
+      "text": "Has try/catch/finally with showProgressIndicator in try and closeProgressIndicator in finally",
+      "passed": false,
+      "evidence": "No progress indicator at all — showProgressIndicator/closeProgressIndicator are absent from the without-skill output"
+    },
+    {
+      "text": "New handler is added inside the DC.OpportunityRibbon revealing module, exported from the return object",
+      "passed": true,
+      "evidence": "submitForApproval inside DC.OpportunityRibbon IIFE; return { OpenMultipleQuoteDialog, SubmitForApproval } — correct"
+    }
+  ],
+  "pass_rate": 0.8
+}

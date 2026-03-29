@@ -1,0 +1,23 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-hide-overrideprice",
+  "prompt": "In dc_quote_product_main_operations.js, when the form loads I need to hide the field dc_overrideprice if the quote's statecode is 3 (Won). Show it otherwise. Extend the existing onLoad handler to do this.",
+  "assertions": [
+    {
+      "id": "uses-setVisible",
+      "text": "Uses setVisible(true/false) on the dc_overrideprice control"
+    },
+    {
+      "id": "retrieves-statecode-from-api",
+      "text": "Retrieves the quote statecode via Xrm.WebApi or fetch, not by reading a form field directly"
+    },
+    {
+      "id": "stays-in-namespace",
+      "text": "Code is added inside the NavcoQuoteLineSdk IIFE, not as a global function"
+    },
+    {
+      "id": "null-guard-on-lookup",
+      "text": "Guards against null/empty quoteid before calling .getValue()[0]"
+    }
+  ]
+}

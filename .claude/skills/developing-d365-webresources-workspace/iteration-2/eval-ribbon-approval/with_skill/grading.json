@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-ribbon-approval",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Role check uses Xrm.Utility.getGlobalContext().userSettings.roles (synchronous), not a WebAPI query",
+      "passed": true,
+      "evidence": "Line 81 uses `Xrm.Utility.getGlobalContext().userSettings.roles` synchronously inside the `userHasRole` helper, with no WebAPI call."
+    },
+    {
+      "text": "Uses Xrm.Navigation.openConfirmDialog, not the native browser confirm()",
+      "passed": true,
+      "evidence": "Line 88 calls `Xrm.Navigation.openConfirmDialog({ title, text }, { height: 200, width: 450 })`, not the native `confirm()` function."
+    },
+    {
+      "text": "Custom action dc_SubmitOpportunityForApproval is called via fetch or Xrm.WebApi.execute bound to the opportunity record",
+      "passed": true,
+      "evidence": "Lines 52–63 call the action via `fetch` with the URL `opportunities(${opportunityId})/Microsoft.Dynamics.CRM.dc_SubmitOpportunityForApproval`, correctly bound to the opportunity record."
+    },
+    {
+      "text": "Has try/catch/finally with showProgressIndicator in try and closeProgressIndicator in finally",
+      "passed": true,
+      "evidence": "Line 47 calls `Xrm.Utility.showProgressIndicator(...)` before the try block's async work, and line 70 calls `Xrm.Utility.closeProgressIndicator()` inside the `finally` block."
+    },
+    {
+      "text": "New handler is added inside the DC.OpportunityRibbon revealing module, exported from the return object",
+      "passed": true,
+      "evidence": "`submitForApproval` is defined as a private function inside the `DC.OpportunityRibbon` IIFE and exported on line 77 as `SubmitForApproval: submitForApproval` in the return object."
+    }
+  ]
+}
