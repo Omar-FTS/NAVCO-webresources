@@ -1,13 +1,16 @@
 # ADW Configuration
 
-runtime: claude # used for ADW runtime. Choose either claude or opencode
+runtime: opencode # used for ADW runtime. Choose either claude or opencode
 
 main_branch: main # used for git diffs, merges, PRs, and worktree creation
 
 models:
-  low: haiku
-  medium: sonnet
-  high: opus
+  # low: haiku
+  # medium: sonnet
+  # high: opus
+  low: github-copilot/claude-haiku-4.5
+  medium: github-copilot/claude-opus-4.6
+  high: github-copilot/claude-sonnet-4.6
   # override: opus  # uncomment to force all tiers to this model
   # For OpenCode, use full provider/model format:
   # low: anthropic/claude-haiku-4-5
@@ -15,5 +18,5 @@ models:
   # high: anthropic/claude-opus-4-1
 
 paths:
-  claude_code: claude
-  opencode: opencode
+  claude_code: C:/Users/Omar Taladeh/AppData/Roaming/npm/claude.cmd
+  opencode: C:\Users\Omar Taladeh\AppData\Roaming\npm\opencode.cmd
