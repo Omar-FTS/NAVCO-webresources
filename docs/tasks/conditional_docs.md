@@ -23,3 +23,10 @@
     - When operating on application source code
     - When first understanding the project structure
 
+- docs/tasks/bug-quote-product-cost-override-default-7f242fa6/doc-bug-quote-product-cost-override-default-7f242fa6.md
+  - Conditions:
+    - When working with the Quote Product (Quote Line) form scripts
+    - When implementing or modifying default field values on form load in dc_quote_product_main_operations.js
+    - When troubleshooting dc_costoverride or dc_overridedescription required-level behaviour
+    - When adding guarded default value logic to formOnLoad handlers
+
