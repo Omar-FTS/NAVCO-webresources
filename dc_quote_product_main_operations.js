@@ -8,7 +8,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         lockFormWhenRelatedQuoteIsWonOrLost(formContext);
         filterProducts(executionContext);
         SetMarginsAndDefaults(executionContext);
-        setDefaultCostOverride(formContext);
         setCostOverrideDescriptionRequired(executionContext);
     }
 
@@ -482,14 +481,6 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         } else {
             // Otherwise, make it not required
             overrideDescriptionAttr.setRequiredLevel("none");
-        }
-    }
-
-    // Set default value for dc_costoverride on form load
-    function setDefaultCostOverride(formContext) {
-        var costOverrideAttr = formContext.getAttribute("dc_costoverride");
-        if (costOverrideAttr && costOverrideAttr.getValue() == null) {
-            costOverrideAttr.setValue(5);
         }
     }
 
