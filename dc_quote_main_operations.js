@@ -287,6 +287,7 @@ var NavcoSdk = window.NavcoSdk || {};
         var QUOTE_MODEL_STANDARD = 948170000;
         var BPF_BOX_SALE_QUOTE_TO_ORDER = "Box Sale Quote to Order";
         var BPF_MULTIPLE_QUOTE_OPP_SALES = "Multiple Quote Opportunity Sales Process";
+        var FORM_TYPE_CREATE = 1;
 
         var quoteModelAttr = formContext.getAttribute("dc_quotemodel");
         if (!quoteModelAttr || quoteModelAttr.getValue() === null) {
@@ -302,7 +303,7 @@ var NavcoSdk = window.NavcoSdk || {};
         --------------------------------*/
         if (quoteModel === QUOTE_MODEL_BOX_SALE) {
 
-            if (formContext.ui.getFormType() !== 1) { //on Create
+            if (formContext.ui.getFormType() !== FORM_TYPE_CREATE) { //on Create
                 setBpfByName(formContext, BPF_BOX_SALE_QUOTE_TO_ORDER);
             }
 
