@@ -86,7 +86,7 @@ var NavcoQuoteLineSdk = window.NavcoQuoteLineSdk || {};
         const FORM_NOTIFICATION_ID = "lockedquote";
         const ERROR_MESSAGE = "Cannot edit lines on a quote pending approval.";
 
-        const quoteAttr = formContext.getAttribute("dc_quoteid");
+        const quoteAttr = formContext.getAttribute("quoteid");
 
         if (!quoteAttr || !quoteAttr.getValue()) {
             return;
