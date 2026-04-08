@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "deploy": "uv run .claude/skills/deploying-d365-webresources/deploy.py"
+  }
+}

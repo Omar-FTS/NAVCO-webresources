@@ -1,0 +1,36 @@
+{
+  "eval_id": "eval-5-missing-env",
+  "variant": "without_skill",
+  "model": "claude-sonnet-4-6",
+  "date": "2026-04-08",
+  "task": "Push dc_quote_main_operations.js to D365 when no .env file exists",
+
+  "scores": {
+    "correctly_identified_missing_env": true,
+    "blocked_deployment_appropriately": true,
+    "provided_env_template": true,
+    "explained_where_to_find_credentials": true,
+    "attempted_to_run_deploy_anyway": false,
+    "gave_actionable_next_steps": true,
+    "created_env_file_automatically": false,
+    "used_placeholder_credentials": false
+  },
+
+  "behavior_summary": {
+    "detected_problem": "Missing .env file — no credentials available to authenticate to D365.",
+    "action_taken": "Blocked deployment. Explained what is needed, provided an env template, and described where to find each value.",
+    "did_not_do": "Did not attempt to run any deploy command. Did not guess or fabricate credentials. Did not create a .env file on behalf of the user.",
+    "guidance_quality": "Good — clear table mapping each variable to its source in Azure Portal. Missing any reference to a project-specific .env.example or existing deploy tooling in the repo."
+  },
+
+  "observations": [
+    "Without the skill, the assistant correctly identified the blocker (missing .env) and refused to proceed.",
+    "The assistant provided a generic .env template but did not discover or reference the existing .env.example in the project at .claude/skills/deploying-d365-webresources/.env.example.",
+    "The assistant did not reference the project's actual deploy tooling (deploy.js / deploy.py) specifically.",
+    "No hallucinated credentials or fabricated deployment steps were produced.",
+    "Response is helpful but generic — a skilled assistant or a skill-aware assistant would point directly to the .env.example and the correct deploy command."
+  ],
+
+  "pass": true,
+  "notes": "The without-skill response correctly gates on the missing .env and provides reasonable guidance. It lacks project-specific context that the skill would supply (pointing to .env.example, the exact deploy command, etc.)."
+}

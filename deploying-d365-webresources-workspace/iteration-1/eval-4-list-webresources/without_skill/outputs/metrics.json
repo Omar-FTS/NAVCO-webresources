@@ -1,0 +1,14 @@
+{
+  "task": "list web resources named dc_quote in D365",
+  "skill_used": false,
+  "success": false,
+  "reason": "No D365 skill available. Cannot connect to Dataverse API to query existing web resources. Response acknowledges limitation and provides manual workarounds.",
+  "d365_query_executed": false,
+  "web_resources_listed": false,
+  "local_files_found": [
+    "dc_quote_main_operations.js",
+    "dc_quote_product_main_operations.js"
+  ],
+  "response_type": "guidance_only",
+  "notes": "Without the deploying-d365-webresources skill, Claude has no mechanism to authenticate or query the Dataverse Web API. It can only suggest manual steps."
+}

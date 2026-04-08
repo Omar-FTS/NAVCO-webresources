@@ -1,0 +1,33 @@
+{
+  "eval": "eval-5-missing-env",
+  "variant": "with_skill",
+  "user_prompt": "push dc_quote_main_operations.js to D365 — there's no .env file yet",
+  "skill_triggered": true,
+  "steps_attempted": {
+    "step_1_parse_arguments": true,
+    "step_2_check_env": true,
+    "step_3_run_deploy": false,
+    "step_4_report_result": false
+  },
+  "path_parsed_correctly": true,
+  "path_parsed": "./dc_quote_main_operations.js",
+  "display_name_parsed": null,
+  "unique_name_parsed": null,
+  "env_missing_detected": true,
+  "env_example_copied_to_env": true,
+  "stopped_to_wait_for_user": true,
+  "asked_user_to_clarify_path": false,
+  "deploy_command_run": false,
+  "correct_command_template": "uv run .claude/skills/deploying-d365-webresources/deploy.py ./dc_quote_main_operations.js",
+  "credentials_exposed_in_response": false,
+  "blocking_issues_identified": 1,
+  "blocking_issue_detail": "No .env file — agent created it from .env.example and stopped for user to fill in credentials",
+  "skill_compliance_score": 10,
+  "skill_compliance_max": 10,
+  "notes": [
+    "Skill correctly triggered from 'push ... to D365' phrasing",
+    "Path extracted from natural language without needing to ask user",
+    "Step 2 executed exactly as specified: copied .env.example, said the prescribed message, stopped",
+    "Would resume at Step 3 after user confirmation"
+  ]
+}

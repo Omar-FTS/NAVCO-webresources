@@ -1,0 +1,31 @@
+{
+  "skill_used": false,
+  "response_word_count": 387,
+  "response_section_count": 6,
+  "sections_identified": [
+    "What This Means",
+    "Steps to Fix",
+    "Grant the Required Privilege",
+    "Assign the Role",
+    "Common Mistakes",
+    "Quick Summary"
+  ],
+  "key_topics_covered": [
+    "privilege explanation (prvCreateWebResource)",
+    "named user vs application user distinction",
+    "security role assignment in D365",
+    "least-privilege approach",
+    "Azure AD vs D365 role assignment distinction",
+    "privilege scope (User vs Organization)",
+    "credential validity check"
+  ],
+  "actionable_steps_count": 5,
+  "included_summary_table": true,
+  "error_type": "403 Forbidden - missing D365 security privilege",
+  "root_cause_identified": true,
+  "mentioned_system_customizer_role": true,
+  "mentioned_system_administrator_role": true,
+  "mentioned_application_user": true,
+  "mentioned_org_level_scope": true,
+  "specificity": "general D365 knowledge — no project-specific context used"
+}

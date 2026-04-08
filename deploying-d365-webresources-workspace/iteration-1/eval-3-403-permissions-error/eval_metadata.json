@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "403-permissions-error",
+  "prompt": "I keep getting a 403 error when deploying — it says prvCreateWebResource. What do I do?",
+  "assertions": [
+    "The agent mentions System Administrator role",
+    "The agent mentions System Customizer role",
+    "The agent mentions the 3-5 minute cache wait",
+    "The agent offers to retry the deploy after the user fixes the roles",
+    "The agent does NOT ask the user to install anything or change the .env"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "The agent checks for .env existence",
+      "passed": true,
+      "evidence": "Step 2 explicitly: 'Checked the workspace root... for a .env file. Result: .env does NOT exist'"
+    },
+    {
+      "text": "The agent copies .env.example to .env (or tells the user it will do this)",
+      "passed": true,
+      "evidence": "Response says 'I'll create one from the example' and shows `cp .claude/skills/deploying-d365-webresources/.env.example .env`"
+    },
+    {
+      "text": "The agent does NOT run the deploy before the user confirms credentials are filled in",
+      "passed": true,
+      "evidence": "'Stop here. The skill instructs the agent to stop and wait for the user to confirm the .env file has been filled in before proceeding'"
+    },
+    {
+      "text": "The agent lists the four required variables: D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID",
+      "passed": true,
+      "evidence": "Response includes a table with all four variables: D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID with descriptions"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 3, "Write": 2},
+    "total_tool_calls": 5,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 1900,
+    "transcript_chars": 1900
+  },
+  "timing": {
+    "executor_duration_seconds": 52.1,
+    "total_duration_seconds": 52.1
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "All 4 assertions are well-targeted and discriminating. The skill handles this scenario cleanly."
+  }
+}

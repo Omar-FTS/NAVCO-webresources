@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "The agent mentions System Administrator role",
+      "passed": true,
+      "evidence": "Without-skill response mentions: 'assign the System Administrator or System Customizer role'"
+    },
+    {
+      "text": "The agent mentions System Customizer role",
+      "passed": true,
+      "evidence": "Response mentions System Customizer in multiple places, including the fix table"
+    },
+    {
+      "text": "The agent mentions the 3-5 minute cache wait",
+      "passed": false,
+      "evidence": "Response says 'Role changes in D365 typically take effect immediately (no cache invalidation needed for API calls)' — this is incorrect per the skill's guidance (3-5 minute wait required)"
+    },
+    {
+      "text": "The agent offers to retry the deploy after the user fixes the roles",
+      "passed": false,
+      "evidence": "Response says 'retry your deployment' but does not offer to retry it itself — ends without a concrete next step from the agent"
+    },
+    {
+      "text": "The agent does NOT ask the user to install anything or change the .env",
+      "passed": true,
+      "evidence": "Response does not suggest installing tools. It does mention checking credentials as a potential cause, but doesn't ask the user to change .env"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 2,
+    "total": 5,
+    "pass_rate": 0.6
+  },
+  "execution_metrics": {
+    "tool_calls": {"Write": 2},
+    "total_tool_calls": 2,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 2100,
+    "transcript_chars": 2100
+  },
+  "timing": {
+    "executor_duration_seconds": 47.3,
+    "total_duration_seconds": 47.3
+  },
+  "claims": [
+    {
+      "claim": "Role changes take effect immediately — no cache invalidation needed",
+      "type": "factual",
+      "verified": false,
+      "evidence": "The skill explicitly states to wait 3-5 minutes for privilege cache refresh. The without-skill response contradicts this with incorrect information."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": ["Incorrect claim that role changes take effect immediately — real-world experience shows 3-5 min wait is needed"],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "The cache wait assertion is the most discriminating here — it catches a real factual error in the without-skill response."
+  }
+}

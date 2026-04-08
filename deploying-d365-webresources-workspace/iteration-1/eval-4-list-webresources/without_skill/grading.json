@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "The agent uses the --list flag with the filter 'dc_quote'",
+      "passed": false,
+      "evidence": "Without-skill response suggests `pac webresource list --name dc_quote*` or a Dataverse Web API query — no knowledge of deploy.py's --list flag"
+    },
+    {
+      "text": "The agent uses 'uv run' to invoke the script",
+      "passed": false,
+      "evidence": "Agent does not invoke any local script. It says 'I don't have the ability to connect to a Dynamics 365 environment' and only lists local files"
+    },
+    {
+      "text": "The agent does NOT attempt a deploy",
+      "passed": true,
+      "evidence": "Agent correctly does not attempt a deploy — it explains it can't connect to D365 and only shows local files"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {"Write": 2},
+    "total_tool_calls": 2,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 900,
+    "transcript_chars": 900
+  },
+  "timing": {
+    "executor_duration_seconds": 35.7,
+    "total_duration_seconds": 35.7
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": ["Cannot query D365 without knowing the specific tool"],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "The passing assertion (not attempting a deploy) passes for the wrong reason — the agent can't do anything, not because it made the right call. Consider whether this assertion is truly discriminating for the without-skill baseline."
+  }
+}

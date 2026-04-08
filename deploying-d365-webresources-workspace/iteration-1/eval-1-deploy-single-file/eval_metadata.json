@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "deploy-single-file",
+  "prompt": "deploy ./dc_quote_main_operations.js to D365",
+  "assertions": [
+    "The agent uses 'uv run' (not 'npm run deploy') to invoke the script",
+    "The agent runs the command from the workspace root (not from inside the skill directory)",
+    "The agent reports back to the user with the deploy result — success or a specific error message",
+    "The agent does NOT ask the user to run the command themselves"
+  ]
+}

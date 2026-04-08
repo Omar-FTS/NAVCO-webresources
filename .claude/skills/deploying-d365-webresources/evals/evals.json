@@ -1,0 +1,65 @@
+{
+  "skill_name": "deploying-d365-webresources",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "deploy ./dc_quote_main_operations.js to D365",
+      "expected_output": "The agent reads the skill, checks for .env, runs: uv run .claude/skills/deploying-d365-webresources/deploy.py ./dc_quote_main_operations.js from the workspace root, and reports the result (updated/created + published, or a clear error).",
+      "files": [],
+      "assertions": [
+        "The agent uses 'uv run' (not 'npm run deploy') to invoke the script",
+        "The agent runs the command from the workspace root (not from inside the skill directory)",
+        "The agent reports back to the user with the deploy result — success or a specific error message",
+        "The agent does NOT ask the user to run the command themselves"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "deploy everything starting with dc_ to D365 and add it to the solution 'NAVCO Dev'",
+      "expected_output": "The agent runs: uv run .claude/skills/deploying-d365-webresources/deploy.py ./dc_ \"NAVCO Dev\" from the workspace root, then reports how many files were deployed.",
+      "files": [],
+      "assertions": [
+        "The agent passes the path './dc_' (prefix-style) to the script",
+        "The agent passes 'NAVCO Dev' as the display-name argument",
+        "The agent uses 'uv run' to invoke the script",
+        "The agent summarizes how many files were deployed"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I keep getting a 403 error when deploying — it says prvCreateWebResource. What do I do?",
+      "expected_output": "The agent explains the permissions fix: go to D365 Settings → Security → Application Users, open the app user, Manage Roles, enable both System Administrator and System Customizer, wait 3-5 minutes, then offers to retry.",
+      "files": [],
+      "assertions": [
+        "The agent mentions System Administrator role",
+        "The agent mentions System Customizer role",
+        "The agent mentions the 3-5 minute cache wait",
+        "The agent offers to retry the deploy after the user fixes the roles",
+        "The agent does NOT ask the user to install anything or change the .env"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "what web resources named dc_quote are already in D365?",
+      "expected_output": "The agent runs the --list flag: uv run .claude/skills/deploying-d365-webresources/deploy.py --list dc_quote and shows the results.",
+      "files": [],
+      "assertions": [
+        "The agent uses the --list flag with the filter 'dc_quote'",
+        "The agent uses 'uv run' to invoke the script",
+        "The agent does NOT attempt a deploy"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "push dc_quote_main_operations.js to D365 — there's no .env file yet",
+      "expected_output": "The agent detects missing .env, copies .env.example to .env, and asks the user to fill in their credentials before proceeding.",
+      "files": [],
+      "assertions": [
+        "The agent checks for .env existence",
+        "The agent copies .env.example to .env (or tells the user it will do this)",
+        "The agent does NOT run the deploy before the user confirms credentials are filled in",
+        "The agent lists the four required variables: D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID"
+      ]
+    }
+  ]
+}

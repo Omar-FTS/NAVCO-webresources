@@ -21,7 +21,16 @@
       "Bash(start \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/developing-d365-webresources-workspace/eval_review.html\")",
       "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/new_developing-d365-webresources/evals\")",
       "Bash(mkdir -p \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/new_developing-d365-webresources/references\")",
-      "Bash(where claude:*)"
+      "Bash(where claude:*)",
+      "Bash(npm run:*)",
+      "Bash(PYTHONIOENCODING=utf-8 npm run deploy ./dc_quote_product_main_operations.js)",
+      "Edit(/.claude/skills/deploying-d365-webresources/**)",
+      "Read(//c/Users/Omar Taladeh/Desktop/web-resources/deploying-d365-webresources-workspace/**)",
+      "Read(//c/Users/Omar Taladeh/Desktop/web-resources/**)",
+      "Bash(start \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/deploying-d365-webresources-workspace/review-iteration-1.html\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Omar Taladeh\\Desktop\\web-resources\\NAVCO\\.claude\\skills\\deploying-d365-webresources"
     ]
   }
 }

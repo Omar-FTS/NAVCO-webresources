@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "text": "The agent passes the path './dc_' (prefix-style) to the script",
+      "passed": true,
+      "evidence": "Command shown: `uv run .../deploy.py ./dc_ \"NAVCO Dev\"` — path is `./dc_` as expected"
+    },
+    {
+      "text": "The agent passes 'NAVCO Dev' as the display-name argument",
+      "passed": true,
+      "evidence": "Command explicitly includes `\"NAVCO Dev\"` as the second argument after the path"
+    },
+    {
+      "text": "The agent uses 'uv run' to invoke the script",
+      "passed": true,
+      "evidence": "Command: `uv run .claude/skills/deploying-d365-webresources/deploy.py`"
+    },
+    {
+      "text": "The agent summarizes how many files were deployed",
+      "passed": true,
+      "evidence": "Response includes '8 files' count and lists all 8 dc_* files that would be deployed"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 3, "Write": 2, "Glob": 1},
+    "total_tool_calls": 6,
+    "total_steps": 4,
+    "errors_encountered": 0,
+    "output_chars": 2100,
+    "transcript_chars": 2100
+  },
+  "timing": {
+    "executor_duration_seconds": 55.0,
+    "total_duration_seconds": 55.0
+  },
+  "claims": [
+    {
+      "claim": "Unique name derived as 'NAVCODev' (lowercased, spaces removed from 'NAVCO Dev')",
+      "type": "process",
+      "verified": true,
+      "evidence": "This matches the script logic: `SOLUTION_UNIQUE_NAME = SOLUTION_DISPLAY_NAME.replace(' ', '').lower()`"
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Evals look solid. The 4 assertions together verify the critical behaviors for this scenario."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "eval_id": 4,
+  "eval_name": "list-webresources",
+  "prompt": "what web resources named dc_quote are already in D365?",
+  "assertions": [
+    "The agent uses the --list flag with the filter 'dc_quote'",
+    "The agent uses 'uv run' to invoke the script",
+    "The agent does NOT attempt a deploy"
+  ]
+}

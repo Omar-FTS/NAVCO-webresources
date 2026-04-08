@@ -16,3 +16,10 @@ storage.json
 .playwright-cli/
 .playwright-screenshots/
 .playwright-tests/
+# Node
+node_modules/
+package-lock.json
+deploy.js
+# Python
+__pycache__/
+.venv/

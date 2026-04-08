@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "The agent uses the --list flag with the filter 'dc_quote'",
+      "passed": true,
+      "evidence": "Command: `uv run .../deploy.py --list dc_quote` — exact flag and filter used"
+    },
+    {
+      "text": "The agent uses 'uv run' to invoke the script",
+      "passed": true,
+      "evidence": "Command starts with `uv run .claude/skills/deploying-d365-webresources/deploy.py`"
+    },
+    {
+      "text": "The agent does NOT attempt a deploy",
+      "passed": true,
+      "evidence": "Agent correctly identifies this as a list/query request. Says 'This is a list/query request, not a deploy request' and runs --list only"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 2, "Write": 2},
+    "total_tool_calls": 4,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 1600,
+    "transcript_chars": 1600
+  },
+  "timing": {
+    "executor_duration_seconds": 43.9,
+    "total_duration_seconds": 43.9
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Clean. The skill correctly distinguishes a list query from a deploy request."
+  }
+}

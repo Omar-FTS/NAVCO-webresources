@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "The agent uses 'uv run' (not 'npm run deploy') to invoke the script",
+      "passed": false,
+      "evidence": "Without-skill response does not mention uv at all. It suggests 'pac CLI', 'XrmToolBox', or generic Dataverse API — no knowledge of the project's deploy.py script"
+    },
+    {
+      "text": "The agent runs the command from the workspace root (not from inside the skill directory)",
+      "passed": false,
+      "evidence": "No command is run at all. Agent asks clarifying questions instead of executing anything"
+    },
+    {
+      "text": "The agent reports back to the user with the deploy result — success or a specific error message",
+      "passed": false,
+      "evidence": "Agent asks 'could you tell me what deployment tool you use for D365?' — it never deploys or reports a result"
+    },
+    {
+      "text": "The agent does NOT ask the user to run the command themselves",
+      "passed": false,
+      "evidence": "Response says 'Please share your current deployment setup' and 'If you can share your usual deployment workflow, I can help automate it' — puts the burden on the user"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 1, "Write": 2},
+    "total_tool_calls": 3,
+    "total_steps": 2,
+    "errors_encountered": 0,
+    "output_chars": 1450,
+    "transcript_chars": 1450
+  },
+  "timing": {
+    "executor_duration_seconds": 50.1,
+    "total_duration_seconds": 50.1
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": ["Does not know which tool to use for D365 deployment"],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions — the contrast between with/without is clear and all assertions are well-targeted."
+  }
+}

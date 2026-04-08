@@ -1,0 +1,49 @@
+{
+  "task": "deploy everything starting with dc_ to D365 and add it to the solution 'NAVCO Dev'",
+  "skill_used": "deploying-d365-webresources",
+  "skill_steps_followed": {
+    "step_1_parse_arguments": true,
+    "step_2_check_env": true,
+    "step_3_run_deploy": false,
+    "step_4_report_result": false
+  },
+  "argument_parsing": {
+    "path": "./dc_",
+    "solution_display_name": "NAVCO Dev",
+    "solution_unique_name_derived": "NAVCODev",
+    "solution_unique_name_explicit": null
+  },
+  "env_check": {
+    "env_file_exists": true,
+    "env_file_created": false,
+    "deploy_blocked_by_env": false
+  },
+  "command": {
+    "runner": "uv run",
+    "script": ".claude/skills/deploying-d365-webresources/deploy.py",
+    "full_command": "cd \"C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO\" && uv run .claude/skills/deploying-d365-webresources/deploy.py ./dc_ \"NAVCO Dev\"",
+    "deploy_actually_executed": false
+  },
+  "files": {
+    "dc_files_in_workspace_root": [
+      "dc_order_main_operations.js",
+      "dc_opportunityCustomDialogs.js",
+      "dc_getProductsFromOpportunity.js",
+      "dc_createNewBoxSale.js",
+      "dc_ConvertOrderN52ToJS.js",
+      "dc_opportunity_product_main_operations.js",
+      "dc_quote_main_operations.js",
+      "dc_quote_product_main_operations.js"
+    ],
+    "dc_files_count_workspace_root": 8,
+    "dc_files_total_across_all_dirs": 54
+  },
+  "correctness": {
+    "correct_path_used": true,
+    "correct_runner_used": true,
+    "solution_name_passed_as_arg": true,
+    "did_not_use_npm_run_deploy": true,
+    "skipped_env_creation": true,
+    "asked_user_to_run_manually": false
+  }
+}

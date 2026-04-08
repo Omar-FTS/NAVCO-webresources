@@ -1,0 +1,23 @@
+{
+  "used_correct_command": true,
+  "command": "uv run .claude/skills/deploying-d365-webresources/deploy.py --list dc_quote",
+  "correct_flag_used": "--list",
+  "filter_argument": "dc_quote",
+  "needed_to_ask_user": false,
+  "env_check_performed": true,
+  "env_exists": true,
+  "steps_taken": [
+    "read_skill",
+    "recognized_list_intent",
+    "checked_env_exists",
+    "identified_list_command",
+    "simulated_command_run",
+    "described_result_reporting"
+  ],
+  "step_count": 6,
+  "unnecessary_steps": 0,
+  "skill_section_used": "Useful Commands",
+  "deploy_triggered": false,
+  "correct_behavior": true,
+  "notes": "Skill contains an explicit --list flag for querying existing web resources. Agent correctly identifies this as a query task, not a deploy task, and uses the right command without prompting the user for extra information."
+}

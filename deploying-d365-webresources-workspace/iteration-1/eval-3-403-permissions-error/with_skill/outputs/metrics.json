@@ -1,0 +1,17 @@
+{
+  "skill_used": true,
+  "skill_name": "deploying-d365-webresources",
+  "error_identified": "403 prvCreateWebResource",
+  "correct_diagnosis": true,
+  "steps_provided": [
+    "Identified missing prvCreateWebResource privilege",
+    "Directed user to Settings → Security → Application Users",
+    "Instructed to enable System Administrator and System Customizer roles",
+    "Advised 3–5 minute wait for privilege cache refresh",
+    "Offered to retry deploy after confirmation"
+  ],
+  "commands_run": 0,
+  "response_length_chars": 372,
+  "followed_skill_instructions": true,
+  "asked_user_to_confirm_before_retry": true
+}

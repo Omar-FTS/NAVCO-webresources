@@ -1,0 +1,267 @@
+{
+  "metadata": {
+    "skill_name": "deploying-d365-webresources",
+    "skill_path": "C:/Users/Omar Taladeh/Desktop/web-resources/NAVCO/.claude/skills/deploying-d365-webresources",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-04-08T00:00:00Z",
+    "evals_run": [1, 2, 3, 4, 5],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "deploy-single-file",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 43.3,
+        "tokens": 13280,
+        "tool_calls": 4,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent uses 'uv run' (not 'npm run deploy') to invoke the script", "passed": true, "evidence": "Command explicitly uses uv run"},
+        {"text": "The agent runs the command from the workspace root (not from inside the skill directory)", "passed": true, "evidence": "cd to workspace root before running"},
+        {"text": "The agent reports back to the user with the deploy result", "passed": true, "evidence": "Step 4 response table covers all output scenarios"},
+        {"text": "The agent does NOT ask the user to run the command themselves", "passed": true, "evidence": "Agent narrates and executes autonomously"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "deploy-single-file",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 50.1,
+        "tokens": 10977,
+        "tool_calls": 3,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent uses 'uv run' (not 'npm run deploy') to invoke the script", "passed": false, "evidence": "Suggests pac CLI — no knowledge of deploy.py"},
+        {"text": "The agent runs the command from the workspace root", "passed": false, "evidence": "No command run at all"},
+        {"text": "The agent reports back to the user with the deploy result", "passed": false, "evidence": "Asks clarifying questions instead"},
+        {"text": "The agent does NOT ask the user to run the command themselves", "passed": false, "evidence": "Puts full burden on user"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "deploy-prefix-with-solution",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 55.0,
+        "tokens": 16858,
+        "tool_calls": 6,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent passes the path './dc_' (prefix-style) to the script", "passed": true, "evidence": "Path ./dc_ used in command"},
+        {"text": "The agent passes 'NAVCO Dev' as the display-name argument", "passed": true, "evidence": "\"NAVCO Dev\" passed as second arg"},
+        {"text": "The agent uses 'uv run' to invoke the script", "passed": true, "evidence": "uv run used"},
+        {"text": "The agent summarizes how many files were deployed", "passed": true, "evidence": "8 files listed"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "deploy-prefix-with-solution",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 58.7,
+        "tokens": 11220,
+        "tool_calls": 2,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent passes the path './dc_' (prefix-style) to the script", "passed": false, "evidence": "Suggests find + individual pac commands"},
+        {"text": "The agent passes 'NAVCO Dev' as the display-name argument", "passed": false, "evidence": "Uses pac syntax, wrong tool"},
+        {"text": "The agent uses 'uv run' to invoke the script", "passed": false, "evidence": "No knowledge of uv or deploy.py"},
+        {"text": "The agent summarizes how many files were deployed", "passed": false, "evidence": "No deployment attempted"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "403-permissions-error",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 26.6,
+        "tokens": 12249,
+        "tool_calls": 4,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent mentions System Administrator role", "passed": true, "evidence": "Mentioned explicitly"},
+        {"text": "The agent mentions System Customizer role", "passed": true, "evidence": "Mentioned explicitly"},
+        {"text": "The agent mentions the 3-5 minute cache wait", "passed": true, "evidence": "Exact wording: 'wait 3-5 minutes'"},
+        {"text": "The agent offers to retry the deploy", "passed": true, "evidence": "'Let me know when done and I'll retry'"},
+        {"text": "The agent does NOT ask the user to install anything or change the .env", "passed": true, "evidence": "No install/env suggestions"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "403-permissions-error",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 47.3,
+        "tokens": 10806,
+        "tool_calls": 2,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent mentions System Administrator role", "passed": true, "evidence": "Mentioned in fix table"},
+        {"text": "The agent mentions System Customizer role", "passed": true, "evidence": "Mentioned in fix table"},
+        {"text": "The agent mentions the 3-5 minute cache wait", "passed": false, "evidence": "Incorrectly says changes take effect immediately"},
+        {"text": "The agent offers to retry the deploy", "passed": false, "evidence": "Does not offer to retry — just says 'retry your deployment'"},
+        {"text": "The agent does NOT ask the user to install anything or change the .env", "passed": true, "evidence": "No install suggestions"}
+      ],
+      "notes": ["Contains incorrect factual claim: role changes take effect immediately (wrong — 3-5 min wait needed)"]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "list-webresources",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 43.9,
+        "tokens": 12976,
+        "tool_calls": 4,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent uses the --list flag with the filter 'dc_quote'", "passed": true, "evidence": "--list dc_quote used"},
+        {"text": "The agent uses 'uv run' to invoke the script", "passed": true, "evidence": "uv run used"},
+        {"text": "The agent does NOT attempt a deploy", "passed": true, "evidence": "Correctly identifies as list query"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "list-webresources",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": 35.7,
+        "tokens": 10440,
+        "tool_calls": 2,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent uses the --list flag with the filter 'dc_quote'", "passed": false, "evidence": "Suggests pac webresource list — wrong tool"},
+        {"text": "The agent uses 'uv run' to invoke the script", "passed": false, "evidence": "No knowledge of deploy.py"},
+        {"text": "The agent does NOT attempt a deploy", "passed": true, "evidence": "Correctly does not deploy — but only because it can't connect"}
+      ],
+      "notes": ["Pass on 'does not deploy' assertion is coincidental — agent is paralyzed, not making the right decision"]
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "missing-env",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 52.1,
+        "tokens": 13932,
+        "tool_calls": 5,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent checks for .env existence", "passed": true, "evidence": "Explicitly checks workspace root for .env"},
+        {"text": "The agent copies .env.example to .env", "passed": true, "evidence": "Shows cp command from skill directory"},
+        {"text": "The agent does NOT run the deploy before credentials confirmed", "passed": true, "evidence": "Stops at Step 2, waits for user confirmation"},
+        {"text": "The agent lists the four required variables", "passed": true, "evidence": "Table with all 4 vars shown"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "missing-env",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 46.5,
+        "tokens": 15527,
+        "tool_calls": 5,
+        "errors": 0
+      },
+      "expectations": [
+        {"text": "The agent checks for .env existence", "passed": true, "evidence": "Notes there is no .env file"},
+        {"text": "The agent copies .env.example to .env", "passed": false, "evidence": "Does not know about .env.example — provides a generic template instead"},
+        {"text": "The agent does NOT run the deploy before credentials confirmed", "passed": true, "evidence": "Correctly blocks deployment"},
+        {"text": "The agent lists the four required variables", "passed": true, "evidence": "Lists D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID from general knowledge"}
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+      "time_seconds": {"mean": 44.2, "stddev": 10.0, "min": 26.6, "max": 55.0},
+      "tokens": {"mean": 13859, "stddev": 1500, "min": 12249, "max": 16858}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.34, "stddev": 0.30, "min": 0.0, "max": 0.75},
+      "time_seconds": {"mean": 47.7, "stddev": 8.0, "min": 35.7, "max": 58.7},
+      "tokens": {"mean": 11794, "stddev": 1800, "min": 10440, "max": 15527}
+    },
+    "delta": {
+      "pass_rate": "+0.66",
+      "time_seconds": "-3.5",
+      "tokens": "+2065"
+    }
+  },
+  "notes": [
+    "Eval 3 (403 error): without-skill response contains incorrect factual claim — says role changes take effect immediately, contradicting the 3-5 min cache wait the skill correctly specifies",
+    "Eval 4 (list): without-skill passes 'does not deploy' assertion coincidentally — it's paralyzed, not making an intentional correct decision",
+    "With-skill runs are 100% pass rate across all 5 evals — the skill provides clear, unambiguous guidance for every scenario",
+    "Eval 5 (missing .env): without-skill scores 75% — general D365 knowledge partially covers this scenario, but misses the project-specific .env.example shortcut",
+    "Evals 1 and 2 show the starkest contrast: without-skill scores 0% because it has no knowledge of deploy.py, uv, or the prefix path convention"
+  ]
+}

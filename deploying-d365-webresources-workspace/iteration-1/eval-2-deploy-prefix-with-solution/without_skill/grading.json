@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "The agent passes the path './dc_' (prefix-style) to the script",
+      "passed": false,
+      "evidence": "Without-skill response suggests `find . -name 'dc_*'` and individual `pac webresource upload` calls — it does not know about the `./dc_` prefix convention used by deploy.py"
+    },
+    {
+      "text": "The agent passes 'NAVCO Dev' as the display-name argument",
+      "passed": false,
+      "evidence": "Response suggests `pac webresource upload --solution-name \"NAVCO Dev\"` which uses a different tool and different syntax — not the deploy.py CLI argument"
+    },
+    {
+      "text": "The agent uses 'uv run' to invoke the script",
+      "passed": false,
+      "evidence": "Agent suggests `pac` CLI commands and acknowledges it doesn't know which tool to use. No mention of uv or deploy.py"
+    },
+    {
+      "text": "The agent summarizes how many files were deployed",
+      "passed": false,
+      "evidence": "No deployment occurs — agent asks clarifying questions and says 'I cannot safely run a deployment for you'"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Write": 2},
+    "total_tool_calls": 2,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 1700,
+    "transcript_chars": 1700
+  },
+  "timing": {
+    "executor_duration_seconds": 58.7,
+    "total_duration_seconds": 58.7
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": ["Does not know which deployment tool to use", "Cannot run a deployment without more context"],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions — the gap is clear and all assertions discriminate well."
+  }
+}

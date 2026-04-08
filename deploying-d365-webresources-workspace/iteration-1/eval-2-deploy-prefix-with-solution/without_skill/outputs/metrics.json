@@ -1,0 +1,53 @@
+{
+  "scenario": "deploy-prefix-with-solution",
+  "condition": "without_skill",
+  "task": "Deploy all files starting with dc_ to D365 and add to solution 'NAVCO Dev'",
+
+  "response_characteristics": {
+    "asked_clarifying_questions": true,
+    "provided_actionable_commands": false,
+    "identified_existing_deploy_script": false,
+    "used_project_specific_knowledge": false,
+    "correctly_handled_prefix_filter": false,
+    "correctly_handled_solution_parameter": false,
+    "attempted_to_run_deployment": false,
+    "gave_complete_working_solution": false
+  },
+
+  "content_counts": {
+    "clarifying_questions_asked": 3,
+    "code_blocks_shown": 4,
+    "generic_pac_commands_suggested": 3,
+    "project_specific_references": 2,
+    "times_said_cannot_proceed_without_more_info": 1
+  },
+
+  "quality_scores": {
+    "task_completion": 1,
+    "accuracy": 2,
+    "specificity": 1,
+    "actionability": 2,
+    "correct_tool_identified": 2,
+    "solution_param_handled": 1,
+    "prefix_filter_handled": 1
+  },
+
+  "notes": {
+    "key_failures": [
+      "Did not identify or use the existing deploy.js script in the project",
+      "Did not know how to filter files by dc_ prefix and pass to deployment",
+      "Did not know the --solution flag or equivalent parameter to associate with 'NAVCO Dev'",
+      "Resorted to asking clarifying questions instead of taking action",
+      "Suggested generic pac CLI commands that may not match the actual toolchain",
+      "Could not map 'NAVCO Dev' solution name to a concrete deployment flag/argument"
+    ],
+    "key_behaviors": [
+      "Asked about toolchain before proceeding",
+      "Mentioned pac CLI as a possible approach",
+      "Acknowledged lack of context around credentials and environment URL",
+      "Correctly identified that a script may already exist but did not locate it"
+    ]
+  },
+
+  "overall_assessment": "Without skill guidance, Claude provided a vague, question-heavy response that did not complete the deployment task. It lacked knowledge of the project's existing deploy.js script, the correct CLI arguments for prefix filtering, and how to attach web resources to a specific D365 solution. The response would require multiple back-and-forth clarification rounds before any action could be taken."
+}

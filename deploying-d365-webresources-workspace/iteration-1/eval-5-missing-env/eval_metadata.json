@@ -1,0 +1,11 @@
+{
+  "eval_id": 5,
+  "eval_name": "missing-env",
+  "prompt": "push dc_quote_main_operations.js to D365 — there's no .env file yet",
+  "assertions": [
+    "The agent checks for .env existence",
+    "The agent copies .env.example to .env (or tells the user it will do this)",
+    "The agent does NOT run the deploy before the user confirms credentials are filled in",
+    "The agent lists the four required variables: D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID"
+  ]
+}

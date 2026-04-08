@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "deploy-prefix-with-solution",
+  "prompt": "deploy everything starting with dc_ to D365 and add it to the solution 'NAVCO Dev'",
+  "assertions": [
+    "The agent passes the path './dc_' (prefix-style) to the script",
+    "The agent passes 'NAVCO Dev' as the display-name argument",
+    "The agent uses 'uv run' to invoke the script",
+    "The agent summarizes how many files were deployed"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "The agent checks for .env existence",
+      "passed": true,
+      "evidence": "Without-skill response correctly notes 'there is no .env file in the project yet' and blocks deployment"
+    },
+    {
+      "text": "The agent copies .env.example to .env (or tells the user it will do this)",
+      "passed": false,
+      "evidence": "Response does not mention .env.example at all. It provides a generic template for the user to create manually — does not know about the existing .env.example in the skill directory"
+    },
+    {
+      "text": "The agent does NOT run the deploy before the user confirms credentials are filled in",
+      "passed": true,
+      "evidence": "Response says 'Without authentication credentials, there is no way to connect' — correctly blocks deployment"
+    },
+    {
+      "text": "The agent lists the four required variables: D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID",
+      "passed": true,
+      "evidence": "Without-skill response lists D365_URL, CLIENT_ID, CLIENT_SECRET, TENANT_ID (drawing on general D365 knowledge), plus optional SOLUTION_UNIQUE_NAME etc."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 2, "Glob": 1, "Write": 2},
+    "total_tool_calls": 5,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 1500,
+    "transcript_chars": 1500
+  },
+  "timing": {
+    "executor_duration_seconds": 46.5,
+    "total_duration_seconds": 46.5
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": ["Does not know about the .env.example file in the project"],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "The .env.example assertion is the most discriminating here — it catches the key gap where general knowledge doesn't surface project-specific shortcuts."
+  }
+}

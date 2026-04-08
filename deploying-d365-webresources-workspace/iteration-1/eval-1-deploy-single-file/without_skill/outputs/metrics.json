@@ -1,0 +1,53 @@
+{
+  "eval_id": "eval-1-deploy-single-file",
+  "condition": "without_skill",
+  "timestamp": "2026-04-08T00:00:00Z",
+  "task": "deploy ./dc_quote_main_operations.js to D365",
+
+  "tool_calls": {
+    "total": 1,
+    "breakdown": {
+      "Read": 1,
+      "Bash": 0,
+      "Write": 0,
+      "Grep": 0,
+      "Glob": 0,
+      "other": 0
+    },
+    "notes": "Without skill guidance, Claude would likely read the .env file and possibly look around the directory, but would stop short of executing any deployment commands due to uncertainty."
+  },
+
+  "clarifying_questions_asked": 3,
+  "questions_list": [
+    "What deployment method/tool do you use for D365? (pac CLI, XrmToolBox, custom script?)",
+    "What is the web resource's unique name in D365?",
+    "Does the web resource already exist in D365, or does it need to be created?"
+  ],
+
+  "deployment_attempted": false,
+  "deployment_succeeded": false,
+  "deployment_failure_reason": "No attempt made — Claude lacked knowledge of correct tool, API endpoints, and workflow without skill guidance.",
+
+  "user_interventions_required": 3,
+  "intervention_details": [
+    "User would need to specify the deployment tool",
+    "User would need to provide web resource name/uniquename",
+    "User would need to explain the full deployment workflow"
+  ],
+
+  "commands_executed": 0,
+  "correct_tool_identified": false,
+  "correct_tool_used": false,
+  "env_file_read": true,
+  "env_file_correctly_interpreted": false,
+
+  "confidence_level": "low",
+  "response_quality": {
+    "accurate": false,
+    "complete": false,
+    "actionable": false,
+    "required_user_effort": "high"
+  },
+
+  "summary": "Without skill guidance, Claude could not autonomously deploy the file. It would identify the need for credentials and tooling, read the .env file for clues, but ultimately ask the user multiple clarifying questions and take no deployment action. The user would need to provide significant guidance before any deployment could occur."
+}

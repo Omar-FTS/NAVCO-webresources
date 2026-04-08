@@ -1,0 +1,57 @@
+{
+  "expectations": [
+    {
+      "text": "The agent mentions System Administrator role",
+      "passed": true,
+      "evidence": "Response: 'make sure both System Administrator and System Customizer are checked'"
+    },
+    {
+      "text": "The agent mentions System Customizer role",
+      "passed": true,
+      "evidence": "Response: 'make sure both System Administrator and System Customizer are checked'"
+    },
+    {
+      "text": "The agent mentions the 3-5 minute cache wait",
+      "passed": true,
+      "evidence": "Response: 'wait 3–5 minutes for D365 to refresh its privilege cache'"
+    },
+    {
+      "text": "The agent offers to retry the deploy after the user fixes the roles",
+      "passed": true,
+      "evidence": "Response ends with: 'Let me know when that's done and I'll retry the deploy'"
+    },
+    {
+      "text": "The agent does NOT ask the user to install anything or change the .env",
+      "passed": true,
+      "evidence": "Response focuses only on D365 role assignment — no mention of installing tools or editing .env"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 2, "Write": 2},
+    "total_tool_calls": 4,
+    "total_steps": 2,
+    "errors_encountered": 0,
+    "output_chars": 420,
+    "transcript_chars": 420
+  },
+  "timing": {
+    "executor_duration_seconds": 26.6,
+    "total_duration_seconds": 26.6
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Concise and fully correct. The skill produces a tight, actionable response — no bloat."
+  }
+}
